@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Roro.Workflow.Wpf.PageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Roro.Workflow.Wpf"
+             xmlns:ro="clr-namespace:Roro.Workflow;assembly=Roro.Workflow"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=ro:Page}"
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="thisPageControl">
+    <Grid>
+        <Grid.Resources>
+            <local:TypeOfConverter x:Key="TypeOfConverter" />
+
+        </Grid.Resources>
+        <Canvas x:Name="myCanvasPage">
+            <!--Background-->
+            <Canvas.Background>
+                <VisualBrush TileMode="Tile" Viewport="20 20 20 20" ViewportUnits="Absolute">
+                    <VisualBrush.Visual>
+                        <Path Data="M 0 0 V 20 M 0 0 H 20" Stroke="WhiteSmoke" />
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Canvas.Background>
+            
+            <!--Nodes-->
+            <ItemsControl ItemsSource="{Binding Path=Nodes}"
+                          Width="{Binding ElementName=myCanvasPage, Path=ActualWidth}"
+                          Height="{Binding ElementName=myCanvasPage, Path=ActualHeight}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <local:PageCanvas x:Name="myCanvasNodes"
+                                          Background="Transparent"
+                                          Focusable="True"
+                                          AllowDrop="True" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:NodeControl Focusable="True" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Path=Bounds.X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Path=Bounds.Y}" />
+                        <Setter Property="Width" Value="{Binding Path=Bounds.Width}" />
+                        <Setter Property="Height" Value="{Binding Path=Bounds.Height}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+
+            <Canvas x:Name="myCanvasLink" 
+                    Width="{Binding ElementName=myCanvasPage, Path=ActualWidth}"
+                    Height="{Binding ElementName=myCanvasPage, Path=ActualHeight}">
+            </Canvas>
+
+            <!--SelectingRect-->
+            <Rectangle Stroke="Purple"
+                       StrokeThickness="2"
+                       StrokeDashArray="3 2"
+                       Canvas.Left="{Binding ElementName=thisPageControl, Path=SelectingRect.Left}"
+                       Canvas.Top="{Binding ElementName=thisPageControl, Path=SelectingRect.Top}"
+                       Width="{Binding ElementName=thisPageControl, Path=SelectingRect.Width}"
+                       Height="{Binding ElementName=thisPageControl, Path=SelectingRect.Height}" />
+
+            <Line Stroke="Purple"
+                  StrokeThickness="2"
+                  StrokeDashArray="3 2"
+                  X1="{Binding ElementName=thisPageControl, Path=LinkStartingPoint.X}"
+                  Y1="{Binding ElementName=thisPageControl, Path=LinkStartingPoint.Y}"
+                  X2="{Binding ElementName=thisPageControl, Path=LinkEndingPoint.X}"
+                  Y2="{Binding ElementName=thisPageControl, Path=LinkEndingPoint.Y}">
+            </Line>
+        </Canvas>
+    </Grid>
+</UserControl>

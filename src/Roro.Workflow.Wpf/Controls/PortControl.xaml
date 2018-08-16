@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="Roro.Workflow.Wpf.PortControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Roro.Workflow.Wpf"
+             xmlns:ro="clr-namespace:Roro.Workflow;assembly=Roro.Workflow"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=ro:Port}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.Resources>
+            <local:TypeOfConverter x:Key="TypeOfConverter" />
+
+            <!--PortPathStyle-->
+            <Style x:Key="PortPathStyle" TargetType="Path">
+                <Setter Property="Data" Value="M 1 0 A 1 1 180 0 1 1 2 A 1 1 180 0 1 1 0 Z" />
+                <Setter Property="Stretch" Value="Uniform" />
+                <Setter Property="Fill" Value="Gray" />
+                <Setter Property="Opacity" Value="0.1" />
+                <Style.Triggers>
+
+                    <!--NextPort-->
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=Self}}"  Value="True" />
+                            <Condition Value="{x:Type ro:NextPort}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Fill" Value="Blue" />
+                    </MultiDataTrigger>
+
+                    <!--TruePort-->
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=Self}}"  Value="True" />
+                            <Condition Value="{x:Type ro:TruePort}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Fill" Value="Green" />
+                    </MultiDataTrigger>
+
+                    <!--FalsePort-->
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=Self}}"  Value="True" />
+                            <Condition Value="{x:Type ro:FalsePort}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}" />
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Fill" Value="Red" />
+                    </MultiDataTrigger>
+
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="0.5" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+        
+        <Path Style="{StaticResource ResourceKey=PortPathStyle}" />
+    </Grid>
+</UserControl>
