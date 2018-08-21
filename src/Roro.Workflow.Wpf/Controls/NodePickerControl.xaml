@@ -8,38 +8,48 @@
              d:DataContext="{d:DesignInstance Type={x:Type local:NodePickerControl}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Grid.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Width" Value="80" />
-                <Setter Property="Height" Value="40" />
-                <Setter Property="Margin" Value="4" />
-            </Style>
-        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <WrapPanel Grid.Row="0">
-            <Button Content="Action" />
-            <Button Content="Decision" />
-            <Button Content="Page" />
-            <Button Content="Loop" />
-            <Button Content="End" />
-            <Button Content="Variable" />
-        </WrapPanel>
+
+        <ListView Grid.Row="0"
+                  ItemsSource="{Binding Path=ListViewSource}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.Resources>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Width" Value="60" />
+                    <Setter Property="Height" Value="30" />
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="Margin" Value="4" />
+                    <EventSetter Event="MouseLeftButtonDown" Handler="ViewItem_MouseLeftButtonDown" />
+                </Style>
+            </ListView.Resources>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:NodePickerItem}">
+                    <TextBlock Text="{Binding Path=Text}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
                 
         <TextBox Grid.Row="1"
                  Padding="4"
                  TextChanged="TextBox_TextChanged" />
+        
         <TreeView Grid.Row="2"
                   ItemsSource="{Binding Path=TreeViewSource}">
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local:NodePickerTreeViewItem}"
+                <HierarchicalDataTemplate DataType="{x:Type local:NodePickerItem}"
                                           ItemsSource="{Binding Path=Items}">
                     <TextBlock Text="{Binding Path=Text}"
                                Padding="4"
-                               MouseLeftButtonDown="TreeView_MouseLeftButtonDown" />
+                               MouseLeftButtonDown="ViewItem_MouseLeftButtonDown" />
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>

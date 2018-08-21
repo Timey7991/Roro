@@ -43,10 +43,8 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemContainerStyle>
                     <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding Path=Bounds.X}" />
-                        <Setter Property="Canvas.Top" Value="{Binding Path=Bounds.Y}" />
-                        <Setter Property="Width" Value="{Binding Path=Bounds.Width}" />
-                        <Setter Property="Height" Value="{Binding Path=Bounds.Height}" />
+                        <Setter Property="Canvas.Left" Value="{Binding Path=Rect.X}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Path=Rect.Y}" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
             </ItemsControl>

@@ -12,9 +12,9 @@ namespace Roro.Workflow.Wpf
 
         public PortAnchor TargetNodeAnchor { get; }
 
-        public Point StartPoint => GetPoint(this.SourcePort.ParentNode.Bounds, SourcePortAnchor);
+        public Point StartPoint => GetPoint(this.SourcePort.ParentNode.Rect, SourcePortAnchor);
 
-        public Point EndPoint => GetPoint(TargetNode.Bounds, TargetNodeAnchor);
+        public Point EndPoint => GetPoint(TargetNode.Rect, TargetNodeAnchor);
 
         public double VectorLength => (EndPoint - StartPoint).Length;
 

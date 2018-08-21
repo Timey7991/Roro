@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 
 namespace Roro.Workflow
 {
-    public sealed class ActionNode : Node
+    public sealed class PreparationNode : Node
     {
         public NextPort Next { get; set; } = new NextPort();
-
-        [XmlElement(Type = typeof(XmlTypeHelper))]
-        public Type ActionType { get; set; }
 
         public List<Argument> Arguments { get; set; } = new List<Argument>();
 

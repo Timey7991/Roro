@@ -54,19 +54,19 @@ namespace Roro.Workflow
 
             startNode.Next.To = endNode.Id;
 
-            startNode.Bounds = new NodeRect()
+            startNode.Rect = new NodeRect()
             {
                 X = Page.GRID_SIZE * 1,
                 Y = Page.GRID_SIZE * 2,
-                Width = startNode.Bounds.Width,
-                Height = startNode.Bounds.Height
+                Width = startNode.Rect.Width,
+                Height = startNode.Rect.Height
             };
-            endNode.Bounds = new NodeRect()
+            endNode.Rect = new NodeRect()
             {
                 X = Page.GRID_SIZE * 1,
                 Y = Page.GRID_SIZE * 8,
-                Width = startNode.Bounds.Width,
-                Height = startNode.Bounds.Height
+                Width = startNode.Rect.Width,
+                Height = startNode.Rect.Height
             };
 
             this.Nodes.Add(startNode);
@@ -145,12 +145,12 @@ namespace Roro.Workflow
                         var loopEndNode = new LoopEndNode();
                         loopEndNode.LoopStart.To = loopStartNode.Id;
                         loopStartNode.LoopEnd.To = loopEndNode.Id;
-                        loopEndNode.Bounds = new NodeRect()
+                        loopEndNode.Rect = new NodeRect()
                         {
-                            X = loopStartNode.Bounds.X,
-                            Y = loopStartNode.Bounds.Y + 12 * Page.GRID_SIZE,
-                            Width = loopStartNode.Bounds.Width,
-                            Height = loopStartNode.Bounds.Height
+                            X = loopStartNode.Rect.X,
+                            Y = loopStartNode.Rect.Y + 12 * Page.GRID_SIZE,
+                            Width = loopStartNode.Rect.Width,
+                            Height = loopStartNode.Rect.Height
                         };
                         this.Nodes.Add(loopEndNode);
                     }

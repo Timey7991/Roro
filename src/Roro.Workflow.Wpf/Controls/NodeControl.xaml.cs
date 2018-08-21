@@ -96,7 +96,7 @@ namespace Roro.Workflow.Wpf
                 this._node.Selected = true;
             }
             this._page.Nodes.Where(x => x.Selected).ToList()
-                .ForEach(x => this._nodeBounds.Add(x, new Point(x.Bounds.X, x.Bounds.Y)));
+                .ForEach(x => this._nodeBounds.Add(x, new Point(x.Rect.X, x.Rect.Y)));
 
             this._page.CommitPendingChanges();
         }
@@ -109,12 +109,12 @@ namespace Roro.Workflow.Wpf
             this._nodeBounds.ToList()
                 .ForEach(x =>
                 {
-                    x.Key.Bounds = new NodeRect()
+                    x.Key.Rect = new NodeRect()
                     {
                         X = (int)(x.Value.X + offsetX),
                         Y = (int)(x.Value.Y + offsetY),
-                        Width = x.Key.Bounds.Width,
-                        Height = x.Key.Bounds.Height
+                        Width = x.Key.Rect.Width,
+                        Height = x.Key.Rect.Height
                     };
                 });
 

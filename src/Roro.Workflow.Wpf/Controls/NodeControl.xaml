@@ -8,6 +8,12 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=ro:Node}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Setter Property="Width" Value="80" />
+            <Setter Property="Height" Value="40" />
+        </Style>
+    </UserControl.Style>
     <Grid>
         <Grid.Resources>
             <local:TypeOfConverter x:Key="TypeOfConverter" />
@@ -48,6 +54,9 @@
                     <DataTrigger Value="{x:Type ro:VariableNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
                         <Setter Property="Data" Value="M 0.7 0 H 4 L 3.3 2 H 0 Z" />
                     </DataTrigger>
+                    <DataTrigger Value="{x:Type ro:PreparationNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                        <Setter Property="Data" Value="M 0 1 L 0.7 0 L 3.3 0 L 4 1 L 3.3 2 L 0.7 2 Z" />
+                    </DataTrigger>
                     <DataTrigger Value="{x:Type ro:PageNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
                         <Setter Property="Data" Value="M 0 0 H 4 V 2 H 0 Z M 0.3 0 V 2 M 3.7 0 V 2" />
                     </DataTrigger>
@@ -62,7 +71,7 @@
 
 
         <Path Style="{StaticResource ResourceKey=NodePathStyle}" />
-        <TextBlock Text="{Binding Path=Bounds}" Style="{StaticResource ResourceKey=NodeNameStyle}" />
+        <TextBlock Text="{Binding Path=Name}" Style="{StaticResource ResourceKey=NodeNameStyle}" />
 
         <!--I did not write this -->
         <local:PortControl DataContext="{Binding Path=Ports[0]}" />

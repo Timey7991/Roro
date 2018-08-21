@@ -69,18 +69,18 @@ namespace Roro.Workflow.Wpf
             var mapHeight = 0;
             foreach (var node in nodes)
             {
-                mapWidth = Math.Max(mapWidth, 2 + (node.Bounds.X + node.Bounds.Width) / Page.GRID_SIZE);
-                mapHeight = Math.Max(mapHeight, 2 + (node.Bounds.Y + node.Bounds.Height) / Page.GRID_SIZE);
+                mapWidth = Math.Max(mapWidth, 2 + (node.Rect.X + node.Rect.Width) / Page.GRID_SIZE);
+                mapHeight = Math.Max(mapHeight, 2 + (node.Rect.Y + node.Rect.Height) / Page.GRID_SIZE);
             }
             this._map = new Map(mapWidth, mapHeight);
             foreach (var node in nodes)
             {
-                var x = node.Bounds.X / Page.GRID_SIZE;
-                var right = x + node.Bounds.Width / Page.GRID_SIZE;
+                var x = node.Rect.X / Page.GRID_SIZE;
+                var right = x + node.Rect.Width / Page.GRID_SIZE;
                 for (; x <= right; x++)
                 {
-                    var y = node.Bounds.Y / Page.GRID_SIZE;
-                    var bottom = y + node.Bounds.Height / Page.GRID_SIZE;
+                    var y = node.Rect.Y / Page.GRID_SIZE;
+                    var bottom = y + node.Rect.Height / Page.GRID_SIZE;
                     for (; y <= bottom; y++)
                     {
                         if (x < 0 || y < 0 || x > mapWidth || y > mapHeight)

@@ -11,19 +11,25 @@ namespace Roro.Workflow
 {
     public class XmlSerializerHelper
     {
+        private static XmlSerializer _xmlSerializer;
+
         private static XmlSerializer GetSerializer<T>()
         {
-            var extraTypes = AppDomain.CurrentDomain.GetAssemblies()
-                                 .Where(x =>
-                                     x.GetName().Name.StartsWith(typeof(Activity).Namespace) ||
-                                     x.GetName().Name.Equals(typeof(XmlSerializerHelper).Namespace))
-                                 .SelectMany(x => x.GetTypes())
-                                     .Where(t => !t.IsInterface)
-                                     .Where(t =>
-                                         typeof(Node).IsAssignableFrom(t) ||
-                                         typeof(Port).IsAssignableFrom(t)).ToArray();
+            if (_xmlSerializer is null)
+            {
+                var extraTypes = AppDomain.CurrentDomain.GetAssemblies()
+                                     .Where(x =>
+                                         x.GetName().Name.StartsWith(typeof(Activity).Namespace) ||
+                                         x.GetName().Name.Equals(typeof(XmlSerializerHelper).Namespace))
+                                     .SelectMany(x => x.GetTypes())
+                                         .Where(t => !t.IsInterface)
+                                         .Where(t =>
+                                             typeof(Node).IsAssignableFrom(t) ||
+                                             typeof(Port).IsAssignableFrom(t)).ToArray();
 
-            return new XmlSerializer(typeof(T), extraTypes);
+                _xmlSerializer = new XmlSerializer(typeof(T), extraTypes);
+            }
+            return _xmlSerializer;
         }
 
         public static T ToObject<T>(string xml)

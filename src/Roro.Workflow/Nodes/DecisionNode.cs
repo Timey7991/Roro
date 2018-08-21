@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace Roro.Workflow
 {
@@ -9,7 +10,8 @@ namespace Roro.Workflow
 
         public FalsePort False { get; set; } = new FalsePort();
 
-        public string DecisionType { get; set; }
+        [XmlElement(Type = typeof(XmlTypeHelper))]
+        public Type DecisionType { get; set; }
 
         public List<Argument> Arguments { get; set; } = new List<Argument>();
 

@@ -74,7 +74,7 @@ namespace Roro.Workflow.Wpf
                     .ForEach(x => x.Selected = false);
             }
 
-            this._page.Nodes.Where(x => selectingRect.Contains(new Point(x.Bounds.X, x.Bounds.Y))).ToList()
+            this._page.Nodes.Where(x => selectingRect.Contains(new Point(x.Rect.X, x.Rect.Y))).ToList()
                 .ForEach(x => x.Selected = true);
 
             this._pageControl.SelectingRect = new Rect();
@@ -143,24 +143,20 @@ namespace Roro.Workflow.Wpf
 
         protected override void OnDrop(DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(typeof(NodePickerTreeViewItem)))
+            if (e.Data.GetData("System.RuntimeType") is Type type)
             {
-                var item = e.Data.GetData(typeof(NodePickerTreeViewItem)) as NodePickerTreeViewItem;
-                if (item.Value is Type type)
+                if (Node.Create(type) is Node node)
                 {
-                    if (Node.CreateNodeFromActivity(type.FullName) is Node node)
+                    this._page.CommitPendingChanges();
+                    node.Rect = new NodeRect()
                     {
-                        this._page.CommitPendingChanges();
-                        node.Bounds = new NodeRect()
-                        {
-                            X = (int)e.GetPosition(this).X - node.Bounds.Width / 2,
-                            Y = (int)e.GetPosition(this).Y - node.Bounds.Height / 2,
-                            Width = node.Bounds.Width,
-                            Height = node.Bounds.Height
-                        };
-                        this._page.Nodes.Add(node);
-                        this._page.CommitPendingChanges();
-                    }
+                        X = (int)e.GetPosition(this).X - node.Rect.Width / 2,
+                        Y = (int)e.GetPosition(this).Y - node.Rect.Height / 2,
+                        Width = node.Rect.Width,
+                        Height = node.Rect.Height
+                    };
+                    this._page.Nodes.Add(node);
+                    this._page.CommitPendingChanges();
                 }
             }
         }

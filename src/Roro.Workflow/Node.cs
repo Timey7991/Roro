@@ -28,7 +28,7 @@ namespace Roro.Workflow
         }
         private bool _selected;
 
-        public NodeRect Bounds
+        public NodeRect Rect
         {
             get => this._bounds;
             set => this.OnPropertyChanged(ref this._bounds, value);
@@ -60,7 +60,7 @@ namespace Roro.Workflow
             this.Name = this.GetType().Name;
             //this.X = RandomHelper.Next(0, 1000);
             //this.Y = RandomHelper.Next(0, 600);
-            this.Bounds = new NodeRect()
+            this.Rect = new NodeRect()
             {
                 X = RandomHelper.Next(0, 1000),
                 Y = RandomHelper.Next(0, 600),
@@ -104,29 +104,33 @@ namespace Roro.Workflow
             return null;
         }
 
-        public static Node CreateNodeFromActivity(string activityTypeName)
+        public static Node Create(Type type)
         {
-            var activity = CreateActivity(activityTypeName);
+            var activity = CreateActivity(type.FullName);
             if (activity is IAction)
             {
                 return new ActionNode()
                 {
-                    ActionType = activityTypeName
+                    ActionType = type
                 };
             }
             else if (activity is IDecision)
             {
                 return new DecisionNode()
                 {
-                    DecisionType = activityTypeName
+                    DecisionType = type
                 };
             }
             else if (activity is ILoop)
             {
                 return new LoopStartNode()
                 {
-                    LoopType = activityTypeName
+                    LoopType = type
                 };
+            }
+            else if (Activator.CreateInstance(type) is Node node)
+            {
+                return node;
             }
             else
             {

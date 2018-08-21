@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace Roro.Workflow
 {
@@ -15,7 +16,8 @@ namespace Roro.Workflow
             set => this.OnPropertyChanged(ref this._loopEnded, value);
         }
 
-        public string LoopType { get; set; }
+        [XmlElement(Type = typeof(XmlTypeHelper))]
+        public Type LoopType { get; set; }
 
         public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Top };
 
