@@ -8,7 +8,7 @@ namespace Roro.Workflow.Wpf
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.GetType();
+            return value is Type ? value : value?.GetType();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

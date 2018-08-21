@@ -12,8 +12,6 @@ namespace Roro.Workflow.Wpf
     {
         public ObservableCollection<NodePickerItem> TreeViewSource { get; } = new ObservableCollection<NodePickerItem>();
 
-        public ObservableCollection<NodePickerItem> ListViewSource { get; } = new ObservableCollection<NodePickerItem>();
-
         public NodePickerControl()
         {
             InitializeComponent();
@@ -24,6 +22,16 @@ namespace Roro.Workflow.Wpf
         {
             this.DataContext = this;
             var types = Node.GetActivityTypes();
+
+            var nodes = new NodePickerItem("General", null);
+            nodes.Items.Add(new NodePickerItem("Action", typeof(ActionNode)));
+            nodes.Items.Add(new NodePickerItem("Decision", typeof(DecisionNode)));
+            nodes.Items.Add(new NodePickerItem("Assign", typeof(PreparationNode)));
+            nodes.Items.Add(new NodePickerItem("Variable", typeof(VariableNode)));
+            nodes.Items.Add(new NodePickerItem("Loop", typeof(LoopStartNode)));
+            nodes.Items.Add(new NodePickerItem("Page", typeof(PageNode)));
+            nodes.Items.Add(new NodePickerItem("End", typeof(EndNode)));
+            this.TreeViewSource.Add(nodes);
 
             // TreeViewSource
             foreach (var type in types)
@@ -36,15 +44,6 @@ namespace Roro.Workflow.Wpf
                 }
                 this.TreeViewSource.First(x => x.Text == typeNamespace).Items.Add(new NodePickerItem(typeName, type));
             }
-
-            // ListViewSource
-            this.ListViewSource.Add(new NodePickerItem("Action", typeof(ActionNode)));
-            this.ListViewSource.Add(new NodePickerItem("Decision", typeof(DecisionNode)));
-            this.ListViewSource.Add(new NodePickerItem("Assign", typeof(PreparationNode)));
-            this.ListViewSource.Add(new NodePickerItem("Variable", typeof(VariableNode)));
-            this.ListViewSource.Add(new NodePickerItem("Loop", typeof(LoopStartNode)));
-            this.ListViewSource.Add(new NodePickerItem("Page", typeof(PageNode)));
-            this.ListViewSource.Add(new NodePickerItem("End", typeof(EndNode)));
         }
 
         private void ViewItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -60,7 +59,7 @@ namespace Roro.Workflow.Wpf
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            
         }
     }
 

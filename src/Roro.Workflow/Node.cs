@@ -106,27 +106,21 @@ namespace Roro.Workflow
 
         public static Node Create(Type type)
         {
-            var activity = CreateActivity(type.FullName);
-            if (activity is IAction)
+            if (type is null)
             {
-                return new ActionNode()
-                {
-                    ActionType = type
-                };
+                return null;
             }
-            else if (activity is IDecision)
+            else if (typeof(IAction).IsAssignableFrom(type))
             {
-                return new DecisionNode()
-                {
-                    DecisionType = type
-                };
+                return new ActionNode() { ActionType = type };
             }
-            else if (activity is ILoop)
+            else if (typeof(IDecision).IsAssignableFrom(type))
             {
-                return new LoopStartNode()
-                {
-                    LoopType = type
-                };
+                return new DecisionNode() { DecisionType = type };
+            }
+            else if (typeof(ILoop).IsAssignableFrom(type))
+            {
+                return new LoopStartNode() { LoopType = type };
             }
             else if (Activator.CreateInstance(type) is Node node)
             {
