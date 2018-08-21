@@ -38,6 +38,11 @@ namespace Roro.Workflow.Wpf
                 }
             }
         }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 
     public class NodePickerTreeViewItem

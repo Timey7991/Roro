@@ -11,10 +11,6 @@ namespace Roro.Workflow.Wpf
 
         private Canvas _pageCanvas => VisualTreeHelperEx.GetAncestor<Canvas>(this);
 
-        //private Page _page => this._node.ParentPage;
-
-        //private Node _node => this.DataContext as Node;
-
         private Port _port => this.DataContext as Port;
 
         public PortControl()

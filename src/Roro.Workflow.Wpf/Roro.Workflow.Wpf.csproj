@@ -103,12 +103,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Helpers\PriorityQueue.cs" />
-    <Compile Include="Helpers\PathFinder.cs" />
+    <Compile Include="Controls\PathFinder.cs">
+      <DependentUpon>PageControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PriorityQueue.cs">
+      <DependentUpon>PageControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\NodePickerControl.xaml.cs">
       <DependentUpon>NodePickerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PortAnchorLink.cs">
+      <DependentUpon>PageControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

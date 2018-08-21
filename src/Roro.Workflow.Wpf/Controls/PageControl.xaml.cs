@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -37,14 +37,8 @@ namespace Roro.Workflow.Wpf
         public PageControl()
         {
             InitializeComponent();
-            this.DataContextChanged += PageControl_DataContextChanged;
         }
-
-        private void PageControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            this.UpdateLinks();
-        }
-
+        
         public void UpdateLinks()
         {
             var pathFinder = new PathFinder(this._page.Nodes);
@@ -54,18 +48,27 @@ namespace Roro.Workflow.Wpf
                 {
                     if (this._page.Nodes.FirstOrDefault(x => x.Id == sourcePort.To) is Node targetNode)
                     {
-                        var sourcePoint = new Point(
-                            sourceNode.Bounds.X + sourceNode.Bounds.Width / 2,
-                            sourceNode.Bounds.Y + sourceNode.Bounds.Height);
-                        var targetPoint = new Point(
-                            targetNode.Bounds.X + targetNode.Bounds.Width / 2,
-                            targetNode.Bounds.Y);
-
-                        myCanvasLink.Children.Add(new Path()
+                        var anchorLinks = new List<PortAnchorLink>();
+                        foreach (var sourcePortAnchor in sourcePort.Anchors)
                         {
-                            Data = Geometry.Parse(pathFinder.GetPath(sourcePoint, targetPoint)),
-                            Stroke = Brushes.Gray
-                        });
+                            foreach (var targetNodeAnchor in targetNode.Anchors)
+                            {
+                                anchorLinks.Add(new PortAnchorLink(sourcePort, sourcePortAnchor, targetNode, targetNodeAnchor));
+                            }
+                        }
+                        if (anchorLinks.OrderBy(x => x.VectorLength).FirstOrDefault() is PortAnchorLink anchorLink)
+                        {
+                            sourcePort.CurrentAnchor = anchorLink.SourcePortAnchor;
+                            myCanvasLink.Children.Add(new Path()
+                            {
+                                Data = Geometry.Parse(pathFinder.GetPath(anchorLink.StartPoint, anchorLink.EndPoint)),
+                                Stroke = Brushes.Gray
+                            });
+                        }
+                        else
+                        {
+                            sourcePort.CurrentAnchor = sourcePort.DefaultAnchor;
+                        }
                     }
                 }));
         }

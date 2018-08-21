@@ -8,6 +8,38 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=ro:Port}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Style>
+        <!--PortControl-->
+        <Style TargetType="UserControl">
+            <Setter Property="Width" Value="20" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Margin" Value="-10" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=CurrentAnchor}" Value="Left">
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CurrentAnchor}" Value="Top">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CurrentAnchor}" Value="Right">
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CurrentAnchor}" Value="Bottom">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CurrentAnchor}" Value="None">
+                    <Setter Property="Visibility" Value="Hidden" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Hidden" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
     <Grid>
         <Grid.Resources>
             <local:TypeOfConverter x:Key="TypeOfConverter" />

@@ -16,7 +16,9 @@ namespace Roro.Workflow
         }
 
         public string LoopType { get; set; }
-        
+
+        public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Top };
+
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {
             throw new NotImplementedException();

@@ -8,6 +8,8 @@ namespace Roro.Workflow
 
         public LoopStartPort LoopStart { get; set; } = new LoopStartPort();
 
+        public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Top };
+
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {
             throw new NotImplementedException();

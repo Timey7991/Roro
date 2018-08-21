@@ -58,34 +58,6 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-
-            <!--PortControlStyle-->
-            <Style x:Key="PortControlStyle" TargetType="local:PortControl">
-                <Setter Property="Width" Value="20" />
-                <Setter Property="Height" Value="20" />
-                <Setter Property="Margin" Value="-10" />
-                <Style.Triggers>
-                    <DataTrigger Value="{x:Type ro:NextPort}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                        <Setter Property="VerticalAlignment" Value="Bottom" />
-                    </DataTrigger>
-                    <DataTrigger Value="{x:Type ro:TruePort}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                        <Setter Property="VerticalAlignment" Value="Bottom" />
-                    </DataTrigger>
-                    <DataTrigger Value="{x:Type ro:FalsePort}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                        <Setter Property="HorizontalAlignment" Value="Right" />
-                    </DataTrigger>
-                    <DataTrigger Value="{x:Type ro:LoopStartPort}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                        <Setter Property="Visibility" Value="Hidden" />
-                    </DataTrigger>
-                    <DataTrigger Value="{x:Type ro:LoopEndPort}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                        <Setter Property="Visibility" Value="Hidden" />
-                    </DataTrigger>
-                    <DataTrigger Value="{x:Null}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                        <Setter Property="Visibility" Value="Hidden" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
         </Grid.Resources>
 
 
@@ -93,10 +65,10 @@
         <TextBlock Text="{Binding Path=Bounds}" Style="{StaticResource ResourceKey=NodeNameStyle}" />
 
         <!--I did not write this -->
-        <local:PortControl DataContext="{Binding Path=Ports[0]}" Style="{StaticResource ResourceKey=PortControlStyle}" />
-        <local:PortControl DataContext="{Binding Path=Ports[1]}" Style="{StaticResource ResourceKey=PortControlStyle}" />
-        <local:PortControl DataContext="{Binding Path=Ports[2]}" Style="{StaticResource ResourceKey=PortControlStyle}" />
-        <local:PortControl DataContext="{Binding Path=Ports[3]}" Style="{StaticResource ResourceKey=PortControlStyle}" />
+        <local:PortControl DataContext="{Binding Path=Ports[0]}" />
+        <local:PortControl DataContext="{Binding Path=Ports[1]}" />
+        <local:PortControl DataContext="{Binding Path=Ports[2]}" />
+        <local:PortControl DataContext="{Binding Path=Ports[3]}" />
 
     </Grid>
 </UserControl>

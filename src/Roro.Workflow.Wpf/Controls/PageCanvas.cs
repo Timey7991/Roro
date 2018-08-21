@@ -153,8 +153,8 @@ namespace Roro.Workflow.Wpf
                         this._page.CommitPendingChanges();
                         node.Bounds = new NodeRect()
                         {
-                            X = (int)e.GetPosition(this).X,
-                            Y = (int)e.GetPosition(this).Y,
+                            X = (int)e.GetPosition(this).X - node.Bounds.Width / 2,
+                            Y = (int)e.GetPosition(this).Y - node.Bounds.Height / 2,
                             Width = node.Bounds.Width,
                             Height = node.Bounds.Height
                         };

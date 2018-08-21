@@ -47,6 +47,8 @@ namespace Roro.Workflow
             }
         }
 
+        public abstract PortAnchor[] Anchors { get; }
+
         [XmlIgnore]
         public Page ParentPage { get; internal set; }
 

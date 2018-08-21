@@ -31,5 +31,22 @@ namespace Roro.Workflow
         public Node ParentNode { get; internal set; }
 
         public virtual string Text => string.Empty;
+
+        [XmlIgnore]
+        public PortAnchor CurrentAnchor
+        {
+            get => this._currentAnchor;
+            set => this.OnPropertyChanged(ref this._currentAnchor, value);
+        }
+        private PortAnchor _currentAnchor;
+
+        public abstract PortAnchor DefaultAnchor { get; }
+
+        public abstract PortAnchor[] Anchors { get; }
+
+        protected Port()
+        {
+            this.CurrentAnchor = this.DefaultAnchor;
+        }
     }
 }
