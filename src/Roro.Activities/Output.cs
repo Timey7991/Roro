@@ -1,12 +1,17 @@
-﻿namespace Roro.Activities
+﻿using System;
+using System.Data;
+using System.Security;
+
+namespace Roro.Activities
 {
     /// <typeparam name="T">
     /// Should be
-    /// <see cref="string"/>,
-    /// <see cref="decimal"/>,
-    /// <see cref="bool"/>,
-    /// <see cref="DateTime"/> or
-    /// <see cref="DataTable"/>
+    /// <see cref="String"/>,
+    /// <see cref="Decimal"/>,
+    /// <see cref="Boolean"/>,
+    /// <see cref="DateTime"/>
+    /// <see cref="DataTable"/> or
+    /// <see cref="SecureString"/>
     /// </typeparam>
     public interface Output<T>
     {

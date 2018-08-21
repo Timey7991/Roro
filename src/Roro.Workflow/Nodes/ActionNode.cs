@@ -8,8 +8,7 @@ namespace Roro.Workflow
     {
         public NextPort Next { get; set; } = new NextPort();
 
-        [XmlElement(Type = typeof(XmlTypeHelper))]
-        public Type ActionType { get; set; }
+        public XmlTypeHelper ActionType { get; set; }
 
         public List<Argument> Arguments { get; set; } = new List<Argument>();
 

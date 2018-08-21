@@ -28,7 +28,7 @@ namespace Roro.Workflow
 
         public void CommitPendingChanges()
         {
-            var xmlNodes = XmlSerializerHelper.ToString(this.Nodes);
+            var xmlNodes = XmlSerializerHelper.ToString(this.Nodes.ToArray());
             if (!this.CanUndo || xmlNodes != this._undoStack.Peek())
             {
                 this._undoStack.Push(xmlNodes);

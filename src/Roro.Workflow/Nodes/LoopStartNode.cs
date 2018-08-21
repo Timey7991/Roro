@@ -16,8 +16,7 @@ namespace Roro.Workflow
             set => this.OnPropertyChanged(ref this._loopEnded, value);
         }
 
-        [XmlElement(Type = typeof(XmlTypeHelper))]
-        public Type LoopType { get; set; }
+        public XmlTypeHelper LoopType { get; set; }
 
         public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Top };
 

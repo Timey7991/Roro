@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Security;
 using System.Xml.Serialization;
 
 namespace Roro.Workflow
@@ -9,7 +12,7 @@ namespace Roro.Workflow
 
         public abstract ArgumentDirection Direction { get; }
 
-        public Type ArgumentType { get; set; }
+        public XmlTypeHelper ArgumentType { get; set; }
 
         public string Expression { get; set; }
 
@@ -18,5 +21,18 @@ namespace Roro.Workflow
 
         [XmlIgnore]
         public object RuntimeValue { get; set; }
+
+        public static IEnumerable<Type> GetArgumentTypes()
+        {
+            return new Type[]
+            {
+                typeof(string),
+                typeof(decimal),
+                typeof(bool),
+                typeof(DateTime),
+                typeof(DataTable),
+                typeof(SecureString)
+            };
+        }
     }
 }
