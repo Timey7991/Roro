@@ -46,7 +46,10 @@ namespace Roro.Workflow.Wpf
 
         private void myCanvasNodes_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            this.UpdateLinks();
+            if (!(e.NewValue is null))
+            {
+                this.UpdateLinks();
+            }
         }
 
         public void UpdateLinks()

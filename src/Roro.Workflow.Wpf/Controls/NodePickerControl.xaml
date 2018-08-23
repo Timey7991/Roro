@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Roro.Workflow.Wpf"
              xmlns:ro="clr-namespace:Roro.Workflow;assembly=Roro.Workflow"
+             xmlns:act="clr-namespace:Roro.Activities;assembly=Roro.Activities"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type={x:Type local:NodePickerControl}}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -12,20 +13,13 @@
         <Grid.Resources>
             <local:TypeOfConverter x:Key="TypeOfConverter" />
 
-            <!--NodeNameStyle-->
-            <Style x:Key="NodeNameStyle" TargetType="TextBlock">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="TextAlignment" Value="Center" />
-                <!--<Setter Property="TextTrimming" Value="WordEllipsis" />-->
-                <Setter Property="FontSize" Value="10" />
-            </Style>
-            
             <!--NodePathStyle-->
             <Style x:Key="NodePathStyle" TargetType="Path">
                 <Setter Property="Stretch" Value="Fill" />
                 <Setter Property="Stroke" Value="Gray" />
-                <Setter Property="Fill" Value="White" />
+                <Setter Property="Width" Value="30" />
+                <Setter Property="Height" Value="15" />
+                <Setter Property="Margin" Value="4" />
                 <Style.Triggers>
                     <DataTrigger Value="{x:Type ro:ActionNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
                         <Setter Property="Data" Value="M 0 0 H 4 V 2 H 0 Z" />
@@ -55,10 +49,21 @@
                         <Setter Property="Data" Value="M 0 0 H 4 V 2 H 0 Z M 0.3 0 V 2 M 3.7 0 V 2" />
                     </DataTrigger>
 
-                    <DataTrigger Binding="{Binding Path=Selected}" Value="True">
-                        <Setter Property="Stroke" Value="Orange" />
-                        <Setter Property="StrokeThickness" Value="2" />
+                    <DataTrigger Value="{x:Type act:IAction}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}, ConverterParameter={x:Type act:IAction}}">
+                        <Setter Property="Data" Value="M 0 0 H 4 V 2 H 0 Z" />
                     </DataTrigger>
+                    <DataTrigger Value="{x:Type act:IDecision}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}, ConverterParameter={x:Type act:IDecision}}">
+                        <Setter Property="Data" Value="M 0 1 L 2 0 L 4 1 L 2 2 Z" />
+                    </DataTrigger>
+                    <DataTrigger Value="{x:Type act:ILoop}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}, ConverterParameter={x:Type act:ILoop}}">
+                        <Setter Property="Data" Value="M 0 0.7 L 0.7 0 H 3.3 L 4 0.7 V 2 H 0 Z" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                        <Setter Property="Width" Value="Auto" />
+                        <Setter Property="Margin" Value="0" />
+                    </DataTrigger>
+
                 </Style.Triggers>
             </Style>
         </Grid.Resources>
@@ -69,29 +74,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!--<ItemsControl Grid.Row="0"
-                      ItemsSource="{Binding Path=ListViewSource}"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:NodePickerItem}">
-                    <WrapPanel MouseLeftButtonDown="ViewItem_MouseLeftButtonDown">
-                        <Path DataContext="{Binding Path=Value}"
-                              Width="40"
-                              Height="20"
-                              Style="{StaticResource ResourceKey=NodePathStyle}" />
-                        <TextBlock Text="{Binding Path=Text}"
-                                   TextAlignment="Left"
-                                   Style="{StaticResource ResourceKey=NodeNameStyle}" />
-                    </WrapPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>-->
-                
         <TextBox Grid.Row="1"
                  Padding="4"
                  TextChanged="TextBox_TextChanged" />
@@ -101,9 +83,14 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:NodePickerItem}"
                                           ItemsSource="{Binding Path=Items}">
-                    <TextBlock Text="{Binding Path=Text}"
-                               Padding="4"
-                               MouseLeftButtonDown="ViewItem_MouseLeftButtonDown" />
+                    <WrapPanel Background="Transparent"
+                               MouseLeftButtonDown="ViewItem_MouseLeftButtonDown">
+                        <Path DataContext="{Binding Path=Value}"
+                              Style="{StaticResource ResourceKey=NodePathStyle}" />
+                        <TextBlock Text="{Binding Path=Text}"
+                                   Margin="4"
+                                   VerticalAlignment="Center" />
+                    </WrapPanel>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
