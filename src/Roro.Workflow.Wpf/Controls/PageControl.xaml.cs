@@ -38,7 +38,17 @@ namespace Roro.Workflow.Wpf
         {
             InitializeComponent();
         }
-        
+
+        private void myCanvasNodes_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.UpdateLinks();
+        }
+
+        private void myCanvasNodes_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            this.UpdateLinks();
+        }
+
         public void UpdateLinks()
         {
             var pathFinder = new PathFinder(this._page.Nodes);

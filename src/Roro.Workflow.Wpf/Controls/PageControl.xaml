@@ -33,7 +33,10 @@
                         <local:PageCanvas x:Name="myCanvasNodes"
                                           Background="Transparent"
                                           Focusable="True"
-                                          AllowDrop="True" />
+                                          AllowDrop="True"
+                                          Loaded="myCanvasNodes_Loaded"
+                                          DataContextChanged="myCanvasNodes_DataContextChanged"
+                                          />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>

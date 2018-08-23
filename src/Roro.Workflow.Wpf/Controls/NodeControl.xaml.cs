@@ -77,7 +77,7 @@ namespace Roro.Workflow.Wpf
             this.MouseLeftButtonUp -= NodeControl_MouseLeftButtonUp_MoveCancel;
         }
 
-        private Dictionary<Node, Point> _nodeBounds;
+        private Dictionary<Node, Point> _nodeRects;
 
         private void NodeControl_MouseMove_MoveStart(object sender, MouseEventArgs e)
         {
@@ -88,7 +88,7 @@ namespace Roro.Workflow.Wpf
             this.MouseMove += NodeControl_MouseMove_Moving;
             this.MouseLeftButtonUp += NodeControl_MouseLeftButtonUp_MoveEnd;
 
-            this._nodeBounds = new Dictionary<Node, Point>();
+            this._nodeRects = new Dictionary<Node, Point>();
             if (!this._node.Selected)
             {
                 this._page.Nodes.Where(x => x.Selected).ToList()
@@ -96,7 +96,7 @@ namespace Roro.Workflow.Wpf
                 this._node.Selected = true;
             }
             this._page.Nodes.Where(x => x.Selected).ToList()
-                .ForEach(x => this._nodeBounds.Add(x, new Point(x.Rect.X, x.Rect.Y)));
+                .ForEach(x => this._nodeRects.Add(x, new Point(x.Rect.X, x.Rect.Y)));
 
             this._page.CommitPendingChanges();
         }
@@ -106,7 +106,7 @@ namespace Roro.Workflow.Wpf
             var mouseMovePoint = e.GetPosition(this._pageCanvas);
             var offsetX = mouseMovePoint.X - this._mouseDownPoint.X;
             var offsetY = mouseMovePoint.Y - this._mouseDownPoint.Y;
-            this._nodeBounds.ToList()
+            this._nodeRects.ToList()
                 .ForEach(x =>
                 {
                     x.Key.Rect = new NodeRect()
@@ -129,6 +129,19 @@ namespace Roro.Workflow.Wpf
             this.ReleaseMouseCapture();
 
             this._page.CommitPendingChanges();
+        }
+
+        #endregion
+
+        #region MOUSE: PROPERTIES
+
+        protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
+        {
+            base.OnMouseDoubleClick(e);
+            if (this._node is ActionNode actionNode)
+            {
+                actionNode.SyncArguments();
+            }
         }
 
         #endregion
