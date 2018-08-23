@@ -22,10 +22,12 @@ namespace Roro.Workflow
                                          x.GetName().Name.StartsWith(typeof(Activity).Namespace) ||
                                          x.GetName().Name.Equals(typeof(XmlSerializerHelper).Namespace))
                                      .SelectMany(x => x.GetTypes())
-                                         .Where(t => !t.IsInterface)
-                                         .Where(t =>
-                                             typeof(Node).IsAssignableFrom(t) ||
-                                             typeof(Port).IsAssignableFrom(t)).ToArray();
+                                         .Where(x => !x.IsInterface)
+                                         .Where(x => !x.IsGenericType)
+                                         .Where(x =>
+                                             typeof(Node).IsAssignableFrom(x) ||
+                                             typeof(Port).IsAssignableFrom(x) ||
+                                             typeof(Argument).IsAssignableFrom(x)).ToArray();
 
                 _xmlSerializer = new XmlSerializer(typeof(T), extraTypes);
             }

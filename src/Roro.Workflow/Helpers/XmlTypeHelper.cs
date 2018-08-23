@@ -7,16 +7,16 @@ namespace Roro.Workflow
 {
     public class XmlTypeHelper : IXmlSerializable
     {
-        private string _typeName;
+        private Type _type;
 
         private XmlTypeHelper()
         {
 
         }
 
-        private XmlTypeHelper(string typeName)
+        private XmlTypeHelper(Type type)
         {
-            this._typeName = typeName;
+            this._type = type;
         }
 
         public XmlSchema GetSchema()
@@ -26,22 +26,22 @@ namespace Roro.Workflow
 
         public void ReadXml(XmlReader reader)
         {
-            this._typeName = reader.ReadContentAsString();
+            this._type = Type.GetType(reader.ReadContentAsString());
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            writer.WriteString(this._typeName);
+            writer.WriteString(this._type.FullName);
         }
 
-        public static implicit operator Type(XmlTypeHelper type)
+        public static implicit operator Type(XmlTypeHelper xmlType)
         {
-            return Type.GetType(type._typeName);
+            return xmlType._type;
         }
 
         public static implicit operator XmlTypeHelper(Type type)
         {
-            return new XmlTypeHelper(type.FullName);
+            return new XmlTypeHelper(type);
         }
     }
 }

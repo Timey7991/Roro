@@ -5,6 +5,16 @@ namespace Roro.Workflow
     public class OutArgument : Argument
     {
         public override ArgumentDirection Direction => ArgumentDirection.Out;
+
+        public OutArgument ToNonGeneric()
+        {
+            return new OutArgument()
+            {
+                Name = Name,
+                ArgumentType = ArgumentType,
+                Expression = Expression
+            };
+        }
     }
 
     public class OutArgument<T> : OutArgument, Output<T>
