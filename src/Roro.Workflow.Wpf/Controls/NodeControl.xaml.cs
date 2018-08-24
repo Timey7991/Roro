@@ -137,10 +137,12 @@ namespace Roro.Workflow.Wpf
 
         protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
         {
-            base.OnMouseDoubleClick(e);
+            e.Handled = true;
+
             if (this._node is ActionNode actionNode)
             {
                 actionNode.SyncArguments();
+                new NodePropertyEditor(actionNode).ShowDialog();
             }
         }
 

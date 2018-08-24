@@ -126,7 +126,7 @@ namespace Roro.Workflow.Wpf
             }
             else if (e.Key == Key.A && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                this._page.Nodes.ForEach(x => x.Selected = true);
+                this._page.Nodes.ToList().ForEach(x => x.Selected = true);
             }
             else
             {

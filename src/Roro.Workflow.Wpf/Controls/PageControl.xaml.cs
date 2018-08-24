@@ -56,7 +56,7 @@ namespace Roro.Workflow.Wpf
         {
             var pathFinder = new PathFinder(this._page.Nodes);
             myCanvasLink.Children.Clear();
-            this._page.Nodes.ForEach(sourceNode =>
+            this._page.Nodes.ToList().ForEach(sourceNode =>
                 sourceNode.Ports.ToList().ForEach(sourcePort =>
                 {
                     if (this._page.Nodes.FirstOrDefault(x => x.Id == sourcePort.To) is Node targetNode)
@@ -82,6 +82,10 @@ namespace Roro.Workflow.Wpf
                         {
                             sourcePort.CurrentAnchor = sourcePort.DefaultAnchor;
                         }
+                    }
+                    else
+                    {
+                        sourcePort.CurrentAnchor = sourcePort.DefaultAnchor;
                     }
                 }));
         }

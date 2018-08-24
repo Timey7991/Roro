@@ -104,7 +104,7 @@ namespace Roro.Workflow
             if (this.SelectedNodes.Count() > 0)
             {
                 this.CommitPendingChanges();
-                this.Nodes.RemoveAll(x => x.Selected);
+                this.SelectedNodes.ToList().ForEach(x => this.Nodes.Remove(x));
                 this.CommitPendingChanges();
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Security;
 using System.Xml.Serialization;
 
@@ -22,17 +23,21 @@ namespace Roro.Workflow
         [XmlIgnore]
         public object RuntimeValue { get; set; }
 
-        public static IEnumerable<Type> GetArgumentTypes()
+        public static IEnumerable<XmlTypeHelper> Types
         {
-            return new Type[]
-            {
-                typeof(string),
-                typeof(decimal),
-                typeof(bool),
-                typeof(DateTime),
-                typeof(DataTable),
-                typeof(SecureString)
-            };
+            get => new XmlTypeHelper[] {
+                        new XmlTypeHelper(typeof(string)),
+                        new XmlTypeHelper(typeof(decimal)),
+                        new XmlTypeHelper(typeof(bool)),
+                        new XmlTypeHelper(typeof(DateTime)),
+                        new XmlTypeHelper(typeof(DataTable)),
+                        new XmlTypeHelper(typeof(SecureString))
+                    };
+        }
+
+        public static IEnumerable<ArgumentDirection> Directions
+        {
+            get => Enum.GetValues(typeof(ArgumentDirection)).Cast<ArgumentDirection>();
         }
     }
 }

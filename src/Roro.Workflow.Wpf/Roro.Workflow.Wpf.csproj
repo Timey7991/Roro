@@ -115,6 +115,9 @@
     <Compile Include="Controls\PortAnchorLink.cs">
       <DependentUpon>PageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NodePropertyEditor.xaml.cs">
+      <DependentUpon>NodePropertyEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -136,6 +139,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Page Include="NodePropertyEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

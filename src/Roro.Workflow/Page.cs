@@ -49,6 +49,7 @@ namespace Roro.Workflow
         public Page(string name) : this()
         {
             this.Name = name;
+
             var startNode = new StartNode();
             var endNode = new EndNode();
 
@@ -61,6 +62,7 @@ namespace Roro.Workflow
                 Width = startNode.Rect.Width,
                 Height = startNode.Rect.Height
             };
+
             endNode.Rect = new NodeRect()
             {
                 X = Page.GRID_SIZE * 1,
@@ -71,41 +73,6 @@ namespace Roro.Workflow
 
             this.Nodes.Add(startNode);
             this.Nodes.Add(endNode);
-
-            //// test: add nodes
-            var count = 3;// RandomHelper.Next(5, 10);
-            ActionNode nextNode = null;
-            ActionNode prevNode = null;
-            for (var i = 0; i < count; i++)
-            {
-                prevNode = nextNode;
-                nextNode = new ActionNode();
-                if (prevNode != null)
-                {
-                    prevNode.Next.To = nextNode.Id;
-                }
-                this.Nodes.Add(nextNode);
-            }
-            //count = RandomHelper.Next(2, 5);
-            //for (var i = 0; i < count; i++)
-            //{
-            //    this.Nodes.Add(new DecisionNode());
-            //}
-            //count = RandomHelper.Next(2, 3);
-            //for (var i = 0; i < count; i++)
-            //{
-            //    this.Nodes.Add(new LoopStartNode());
-            //}
-            //count = RandomHelper.Next(2, 3);
-            //for (var i = 0; i < count; i++)
-            //{
-            //    this.Nodes.Add(new VariableNode());
-            //}
-            //count = RandomHelper.Next(2, 3);
-            //for (var i = 0; i < count; i++)
-            //{
-            //    this.Nodes.Add(new PageNode());
-            //}
         }
 
         private void Nodes_CollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
@@ -138,7 +105,7 @@ namespace Roro.Workflow
                     var addedNode = e.NewItems[0] as Node;
                     if (addedNode is StartNode newStartNode)
                     {
-                        this.Nodes.RemoveAll(x => x is StartNode && x != newStartNode);
+                        this.Nodes.ToList().RemoveAll(x => x is StartNode && x != newStartNode);
                     }
                     if (addedNode is LoopStartNode loopStartNode && loopStartNode.LoopEnd.To == Guid.Empty)
                     {

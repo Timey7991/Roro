@@ -7,16 +7,16 @@ namespace Roro.Workflow
 {
     public class XmlTypeHelper : IXmlSerializable
     {
-        private Type _type;
+        public Type SystemType { get; private set; }
 
         private XmlTypeHelper()
         {
 
         }
 
-        private XmlTypeHelper(Type type)
+        public XmlTypeHelper(Type type)
         {
-            this._type = type;
+            this.SystemType = type;
         }
 
         public XmlSchema GetSchema()
@@ -26,22 +26,32 @@ namespace Roro.Workflow
 
         public void ReadXml(XmlReader reader)
         {
-            this._type = Type.GetType(reader.ReadContentAsString());
+            this.SystemType = Type.GetType(reader.ReadContentAsString());
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            writer.WriteString(this._type.FullName);
+            writer.WriteString(this.SystemType.FullName);
         }
 
         public static implicit operator Type(XmlTypeHelper xmlType)
         {
-            return xmlType._type;
+            return xmlType.SystemType;
         }
 
         public static implicit operator XmlTypeHelper(Type type)
         {
             return new XmlTypeHelper(type);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is XmlTypeHelper other ? this.SystemType.Equals(other) : this.SystemType.Equals(obj); 
+        }
+
+        public override int GetHashCode()
+        {
+            return this.SystemType.GetHashCode();
         }
     }
 }

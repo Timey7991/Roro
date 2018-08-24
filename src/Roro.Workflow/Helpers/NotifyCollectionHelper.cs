@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Roro.Workflow
 {
-    public sealed class NotifyCollectionHelper<T> : IEnumerable<T>, INotifyCollectionChanged
+    public sealed class NotifyCollectionHelper<T> : IList, IList<T>, INotifyCollectionChanged
     {
         private readonly List<T> _items;
 
@@ -60,24 +60,21 @@ namespace Roro.Workflow
             }
         }
 
-        public NotifyCollectionHelper() : this(null)
+        #region Implements IList<T>
+
+        public int Count => this._items.Count;
+
+        bool ICollection<T>.IsReadOnly => ((IList<T>)this._items).IsReadOnly;
+
+        public T this[int index]
         {
-            ;
+            get => this._items [index];
+            set => throw new NotSupportedException(); // this._items [index] = value;
         }
 
-        public NotifyCollectionHelper(IEnumerable<T> items)
+        public int IndexOf(T item)
         {
-            this._items = items == null ? new List<T>() : new List<T>(items);
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return this._items.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this._items.GetEnumerator();
+            return _items.IndexOf(item);
         }
 
         public void Add(T item)
@@ -96,51 +93,84 @@ namespace Roro.Workflow
             this.OnCollectionChanged(NotifyCollectionChangedAction.Add, item, index);
         }
 
-        public void Remove(T item)
-        {
-            this.RemoveAt(this.IndexOf(item));
-        }
 
-        public void RemoveAt(int index)
+        public bool Remove(T item) => this.RemoveAtWithResult(this.IndexOf(item));
+
+        public void RemoveAt(int index) => this.RemoveAtWithResult(index);
+
+        private bool RemoveAtWithResult(int index)
         {
             var item = this._items[index];
             var cancel = this.OnCollectionChanging(NotifyCollectionChangedAction.Remove, item, index);
             if (cancel)
             {
-                return;
+                return false;
             }
             this._items.RemoveAt(index);
             this.OnCollectionChanged(NotifyCollectionChangedAction.Remove, item, index);
+            return true;
         }
 
-        public void RemoveAll(Func<T, bool> predicate)
+        public void Clear() => this._items.ToList().ForEach(x => this.Remove(x));
+
+        public bool Contains(T item) => this._items.Contains(item);
+
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex) => this._items.CopyTo(array, arrayIndex);
+
+        public IEnumerator<T> GetEnumerator() => this._items.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this._items.GetEnumerator();
+
+        #endregion
+
+        #region Implements IList
+
+        bool IList.IsFixedSize => ((IList)this._items).IsFixedSize;
+
+        bool IList.IsReadOnly => ((IList)this._items).IsReadOnly;
+
+        int ICollection.Count => ((IList)this._items).Count;
+
+        bool ICollection.IsSynchronized => ((IList)this._items).IsSynchronized;
+
+        object ICollection.SyncRoot => ((IList)this._items).SyncRoot;
+
+        object IList.this[int index]
         {
-            this._items.Where(predicate).ToList().ForEach(x => this.Remove(x));
+            get => this[index];
+            set => this[index] = (T)value;
         }
 
-        public void Clear()
+        int IList.Add(object value)
         {
-            this.RemoveAll(x => true);
+            this.Add((T)value);
+            return this.Count - 1;
         }
 
-        public int IndexOf(T item)
+        void IList.Clear() => this.Clear();
+
+        bool IList.Contains(object value) => this.Contains((T)value);
+
+        int IList.IndexOf(object value) => this.IndexOf((T)value);
+
+        void IList.Insert(int index, object value) => this.Insert(index, (T)value);
+
+        void IList.Remove(object value) => this.Remove((T)value);
+
+        void IList.RemoveAt(int index) => this.RemoveAt(index);
+
+        void ICollection.CopyTo(Array array, int index) => (this._items as IList).CopyTo(array, index);
+
+        #endregion
+
+        public NotifyCollectionHelper() : this(null)
         {
-            return this._items.IndexOf(item);
+            ;
         }
 
-        public bool Contains(T item)
+        public NotifyCollectionHelper(IEnumerable<T> items)
         {
-            return this._items.Contains(item);
-        }
-
-        public bool Contains(Func<T, bool> predicate)
-        {
-            return this._items.FirstOrDefault(predicate) is T;
-        }
-
-        public void ForEach(Action<T> action)
-        {
-            this._items.ForEach(action);
+            this._items = items == null ? new List<T>() : new List<T>(items);
         }
     }
 

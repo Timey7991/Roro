@@ -9,9 +9,14 @@ namespace Roro.Workflow
     {
         public NextPort Next { get; set; } = new NextPort();
 
-        public XmlTypeHelper ActionType { get; set; }
+        public XmlTypeHelper ActionType
+        {
+            get => this._actionType;
+            set => this.OnPropertyChanged(ref this._actionType, value);
+        }
+        private XmlTypeHelper _actionType;
 
-        public List<Argument> Arguments { get; set; } = new List<Argument>();
+        public NotifyCollectionHelper<Argument> Arguments { get; } = new NotifyCollectionHelper<Argument>();
 
         public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 
@@ -53,15 +58,16 @@ namespace Roro.Workflow
 
                 var cachedArguments = this.Arguments;
 
-                cachedArguments.ForEach(cachedArgument =>
+                cachedArguments.ToList().ForEach(cachedArgument =>
                 {
-                    if (currentArguments.FirstOrDefault(x => x.Name == cachedArgument.Name) is Argument currentArgument)
+                    if (currentArguments.FirstOrDefault(x => x.Name == cachedArgument.Name && x.Direction == cachedArgument.Direction) is Argument currentArgument)
                     {
                         currentArgument.Expression = cachedArgument.Expression;
                     }
                 });
 
-                this.Arguments = currentArguments;
+                this.Arguments.Clear();
+                currentArguments.ToList().ForEach(x => this.Arguments.Add(x));
             }
             else
             {
