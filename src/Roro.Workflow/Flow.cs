@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Xml.Serialization;
@@ -17,7 +18,7 @@ namespace Roro.Workflow
         }
         private string _name;
 
-        public NotifyCollectionHelper<Page> Pages { get; }
+        public ObservableCollection<Page> Pages { get; } = new ObservableCollection<Page>();
 
         public Page MainPage => this.Pages.First(x => x.Name == Page.MAIN_PAGE_NAME);
 
@@ -39,9 +40,27 @@ namespace Roro.Workflow
         {
             this.Id = Guid.NewGuid();
             this.Name = string.Empty;
-            this.Pages = new NotifyCollectionHelper<Page>();
-            this.Pages.CollectionChanging += Pages_CollectionChanging;
             this.Pages.CollectionChanged += Pages_CollectionChanged;
+        }
+
+        private void Pages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Page addedPage in e.NewItems)
+                    {
+                        addedPage.ParentFlow = this;
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Page removedPage in e.OldItems)
+                    {
+                        removedPage.ParentFlow = null;
+                    }
+                    break;
+            }
         }
 
         public Flow(string name) : this()
@@ -53,42 +72,22 @@ namespace Roro.Workflow
             var count = RandomHelper.Next(2, 10);
             for (var i = 1; i < count; i++)
             {
-                this.Pages.Add(new Page("Page " + i));
+                this.AddPage(new Page("Page " + i));
             }
         }
 
-        private void Pages_CollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        public void AddPage(Page page)
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    var pageToAdd = e.NewItems[0] as Page;
-                    break;
-
-                case NotifyCollectionChangedAction.Remove:
-                    var pageToRemove = e.OldItems[0] as Page;
-                    if (pageToRemove == this.MainPage)
-                    {
-                        e.Cancel = true;
-                    }
-                    break;
-            }
+            this.Pages.Add(page);
         }
 
-        private void Pages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void RemovePage(Page page)
         {
-            switch (e.Action)
+            if (page == this.MainPage)
             {
-                case NotifyCollectionChangedAction.Add:
-                    var addedPage = e.NewItems[0] as Page;
-                    addedPage.ParentFlow = this;
-                    break;
-
-                case NotifyCollectionChangedAction.Remove:
-                    var removedPage = e.OldItems[0] as Page;
-                    removedPage.ParentFlow = null;
-                    break;
+                return;
             }
+            this.Pages.Remove(page);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Roro.Workflow
 
         public abstract ArgumentDirection Direction { get; }
 
-        public XmlTypeHelper ArgumentType { get; set; }
+        public TypeWrapper ArgumentType { get; set; }
 
         public string Expression { get; set; }
 
@@ -23,15 +23,15 @@ namespace Roro.Workflow
         [XmlIgnore]
         public object RuntimeValue { get; set; }
 
-        public static IEnumerable<XmlTypeHelper> Types
+        public static IEnumerable<TypeWrapper> Types
         {
-            get => new XmlTypeHelper[] {
-                        new XmlTypeHelper(typeof(string)),
-                        new XmlTypeHelper(typeof(decimal)),
-                        new XmlTypeHelper(typeof(bool)),
-                        new XmlTypeHelper(typeof(DateTime)),
-                        new XmlTypeHelper(typeof(DataTable)),
-                        new XmlTypeHelper(typeof(SecureString))
+            get => new TypeWrapper[] {
+                        new TypeWrapper(typeof(string)),
+                        new TypeWrapper(typeof(decimal)),
+                        new TypeWrapper(typeof(bool)),
+                        new TypeWrapper(typeof(DateTime)),
+                        new TypeWrapper(typeof(DataTable)),
+                        new TypeWrapper(typeof(SecureString))
                     };
         }
 

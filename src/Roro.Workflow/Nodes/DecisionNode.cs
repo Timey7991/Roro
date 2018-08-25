@@ -9,7 +9,7 @@ namespace Roro.Workflow
 
         public FalsePort False { get; set; } = new FalsePort();
 
-        public XmlTypeHelper DecisionType { get; set; }
+        public TypeWrapper DecisionType { get; set; }
 
         public List<Argument> Arguments { get; set; } = new List<Argument>();
 

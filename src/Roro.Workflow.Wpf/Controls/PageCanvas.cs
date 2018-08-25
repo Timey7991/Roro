@@ -142,7 +142,7 @@ namespace Roro.Workflow.Wpf
 
         protected override void OnDrop(DragEventArgs e)
         {
-            if (e.Data.GetData("System.RuntimeType") is Type type)
+            if (e.Data.GetData(typeof(TypeWrapper)) is TypeWrapper type)
             {
                 if (Node.Create(type) is Node node)
                 {

@@ -37,15 +37,15 @@
                    Margin="4"
                    Grid.Row="1"
                    Grid.Column="0" />
-        <ComboBox x:Name="actionTypeComboBox"
-                  Margin="4"
+        <ComboBox Margin="4"
+                  ItemsSource="{x:Static ro:ActivityHelper.ActionTypes}"
                   SelectedItem="{Binding Path=ActionType}"
                   SelectionChanged="actionTypeComboBox_SelectionChanged"
                   Grid.Row="1"
                   Grid.Column="1">
             <ComboBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type ro:XmlTypeHelper}">
-                    <TextBlock Text="{Binding Path=SystemType.FullName}"
+                <DataTemplate DataType="{x:Type ro:TypeWrapper}">
+                    <TextBlock Text="{Binding Path=WrappedType.FullName}"
                                Margin="4" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -64,7 +64,7 @@
                                     Binding="{Binding Path=Direction}"
                                     IsReadOnly="True" />
                 <DataGridComboBoxColumn Header="ArgumentType" Width="Auto"
-                                        DisplayMemberPath="SystemType.Name"
+                                        DisplayMemberPath="WrappedType.Name"
                                         ItemsSource="{x:Static ro:Argument.Types}"
                                         SelectedItemBinding="{Binding Path=ArgumentType}" />
                 <DataGridTextColumn Binding="{Binding Path=Expression}" Header="Value" Width="*" />

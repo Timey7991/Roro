@@ -21,20 +21,19 @@ namespace Roro.Workflow.Wpf
         private void InitializeItemSources()
         {
             this.DataContext = this;
-            var types = Node.GetActivityTypes();
 
             var nodes = new NodePickerItem("General", null);
-            nodes.Items.Add(new NodePickerItem("Action", typeof(ActionNode)));
-            nodes.Items.Add(new NodePickerItem("Decision", typeof(DecisionNode)));
-            nodes.Items.Add(new NodePickerItem("Assign", typeof(PreparationNode)));
-            nodes.Items.Add(new NodePickerItem("Variable", typeof(VariableNode)));
-            nodes.Items.Add(new NodePickerItem("Loop", typeof(LoopStartNode)));
-            nodes.Items.Add(new NodePickerItem("Page", typeof(PageNode)));
-            nodes.Items.Add(new NodePickerItem("End", typeof(EndNode)));
+            nodes.Items.Add(new NodePickerItem("Action", new TypeWrapper(typeof(ActionNode))));
+            nodes.Items.Add(new NodePickerItem("Decision", new TypeWrapper(typeof(DecisionNode))));
+            nodes.Items.Add(new NodePickerItem("Assign", new TypeWrapper(typeof(PreparationNode))));
+            nodes.Items.Add(new NodePickerItem("Variable", new TypeWrapper(typeof(VariableNode))));
+            nodes.Items.Add(new NodePickerItem("Loop", new TypeWrapper(typeof(LoopStartNode))));
+            nodes.Items.Add(new NodePickerItem("Page", new TypeWrapper(typeof(PageNode))));
+            nodes.Items.Add(new NodePickerItem("End", new TypeWrapper(typeof(EndNode))));
             this.TreeViewSource.Add(nodes);
 
             // TreeViewSource
-            foreach (var type in types)
+            foreach (var type in ActivityHelper.ActivityTypes)
             {
                 var typeName = type.Name;
                 var typeNamespace = type.Namespace;
@@ -50,7 +49,7 @@ namespace Roro.Workflow.Wpf
         {
             if ((sender as FrameworkElement).DataContext is NodePickerItem nodePickerItem)
             {
-                if (nodePickerItem.Value is Type type)
+                if (nodePickerItem.Value is TypeWrapper type)
                 {
                     DragDrop.DoDragDrop(this, type, DragDropEffects.Copy);
                 }

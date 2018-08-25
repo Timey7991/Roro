@@ -39,7 +39,7 @@ namespace Roro.Workflow
 
         public override string ToString()
         {
-            return string.Format("X={0}, Y={1}, Width={2}, Height={3}", this.X, this.Y, this.Width, this.Height);
+            return string.Format("[{0} X={1}, Y={2}, Width={3}, Height={4}]", this.GetType().Name, this.X, this.Y, this.Width, this.Height);
         }
     }
 }

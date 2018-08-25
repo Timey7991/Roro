@@ -1,37 +1,32 @@
 ﻿using Roro.Activities;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace Roro.Workflow
 {
     public class XmlSerializerHelper
     {
-        private static XmlSerializer _xmlSerializer;
+        private static Type[] _extraTypes;
 
         private static XmlSerializer GetSerializer<T>()
         {
-            if (_xmlSerializer is null)
+            if (_extraTypes is null)
             {
-                var extraTypes = AppDomain.CurrentDomain.GetAssemblies()
-                                     .Where(x =>
-                                         x.GetName().Name.StartsWith(typeof(Activity).Namespace) ||
-                                         x.GetName().Name.Equals(typeof(XmlSerializerHelper).Namespace))
-                                     .SelectMany(x => x.GetTypes())
-                                         .Where(x => !x.IsInterface)
-                                         .Where(x => !x.IsGenericType)
-                                         .Where(x =>
-                                             typeof(Node).IsAssignableFrom(x) ||
-                                             typeof(Port).IsAssignableFrom(x) ||
-                                             typeof(Argument).IsAssignableFrom(x)).ToArray();
-
-                _xmlSerializer = new XmlSerializer(typeof(T), extraTypes);
+                _extraTypes = AppDomain.CurrentDomain.GetAssemblies()
+                                .Where(x =>
+                                    x.GetName().Name.StartsWith(typeof(Activity).Namespace) ||
+                                    x.GetName().Name.Equals(typeof(XmlSerializerHelper).Namespace))
+                                .SelectMany(x => x.GetTypes())
+                                    .Where(x => !x.IsInterface)
+                                    .Where(x => !x.IsGenericType)
+                                    .Where(x =>
+                                        typeof(Node).IsAssignableFrom(x) ||
+                                        typeof(Port).IsAssignableFrom(x) ||
+                                        typeof(Argument).IsAssignableFrom(x)).ToArray();
             }
-            return _xmlSerializer;
+            return new XmlSerializer(typeof(T), _extraTypes);
         }
 
         public static T ToObject<T>(string xml)

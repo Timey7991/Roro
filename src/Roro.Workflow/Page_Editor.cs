@@ -36,6 +36,33 @@ namespace Roro.Workflow
             }
         }
 
+        public void AddNode(Node node)
+        {
+            if (node is StartNode startNode)
+            {
+                this.Nodes.Where(x => x is StartNode && x != startNode).ToList()
+                    .ForEach(x => this.Nodes.Remove(x));
+            }
+            if (node is LoopStartNode loopStartNode)
+            {
+                var loopEndNode = new LoopEndNode();
+                loopEndNode.LoopStart.To = loopStartNode.Id;
+                loopStartNode.LoopEnd.To = loopEndNode.Id;
+                loopEndNode.Rect = loopStartNode.Rect;
+                loopEndNode.SetPosition(loopStartNode.Rect.X, loopStartNode.Rect.Y + 12 * Page.GRID_SIZE);
+                this.AddNode(loopEndNode);
+            }
+        }
+
+        public void RemoveNode(Node node)
+        {
+            if (node is StartNode && this.Nodes.Count(x => x is StartNode) == 1)
+            {
+                return;
+            }
+            this.Nodes.Remove(node);
+        }
+
         public string Cut()
         {
             var xmlNodes = this.Copy();
@@ -114,7 +141,7 @@ namespace Roro.Workflow
             if (this.CanUndo)
             {
                 var xmlPeekNodes = this._undoStack.Peek();
-                var xmlThisNodes = XmlSerializerHelper.ToString(this.Nodes);
+                var xmlThisNodes = XmlSerializerHelper.ToString(this.Nodes.ToArray());
 
                 if (xmlThisNodes == xmlPeekNodes) // nothing changed since the last commit.
                 {
@@ -124,7 +151,7 @@ namespace Roro.Workflow
                 }
 
                 var objNodes = XmlSerializerHelper.ToObject<Node[]>(this._undoStack.Pop());
-                var xmlNodes = XmlSerializerHelper.ToString(this.Nodes);
+                var xmlNodes = XmlSerializerHelper.ToString(this.Nodes.ToArray());
                 this._redoStack.Push(xmlNodes);
 
                 this.Nodes.Clear();
@@ -137,7 +164,7 @@ namespace Roro.Workflow
             if (this.CanRedo)
             {
                 var objNodes = XmlSerializerHelper.ToObject<Node[]>(this._redoStack.Pop());
-                var xmlNodes = XmlSerializerHelper.ToString(this.Nodes);
+                var xmlNodes = XmlSerializerHelper.ToString(this.Nodes.ToArray());
                 this._undoStack.Push(xmlNodes);
 
                 this.Nodes.Clear();

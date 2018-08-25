@@ -1,9 +1,6 @@
 ﻿using Roro.Activities;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Serialization;
 
 namespace Roro.Workflow
@@ -35,6 +32,8 @@ namespace Roro.Workflow
         }
         private NodeRect _bounds;
 
+        public void SetPosition(int x, int y) => this.Rect = new NodeRect() { X = x, Y = y, Width = this.Rect.Width, Height = this.Rect.Height };
+
         [XmlIgnore]
         public Port[] Ports
         {
@@ -42,7 +41,8 @@ namespace Roro.Workflow
             {
                 return this.GetType().GetProperties()
                     .Where(x => typeof(Port).IsAssignableFrom(x.PropertyType))
-                    .Select(x => x.GetValue(this) as Port)
+                    .Select(x => x.GetValue(this))
+                    .Cast<Port>()
                     .ToArray();
             }
         }
@@ -58,12 +58,8 @@ namespace Roro.Workflow
         {
             this.Id = Guid.NewGuid();
             this.Name = this.GetType().Name;
-            //this.X = RandomHelper.Next(0, 1000);
-            //this.Y = RandomHelper.Next(0, 600);
             this.Rect = new NodeRect()
             {
-                X = RandomHelper.Next(0, 1000),
-                Y = RandomHelper.Next(0, 600),
                 Width = 4 * Page.GRID_SIZE,
                 Height = 2 * Page.GRID_SIZE
             };
@@ -71,58 +67,25 @@ namespace Roro.Workflow
 
         public abstract NodeExecutionResult Execute(NodeExecutionContext context);
 
-        #region ACTIVITY
-
-        private static IEnumerable<Type> _activityTypes;
-
-        public static IEnumerable<Type> GetActivityTypes()
-        {
-            if (_activityTypes == null)
-            {
-                Directory.GetFiles(Environment.CurrentDirectory, typeof(Activity).Namespace + "?*.dll").ToList()
-                    .ForEach(x => Assembly.LoadFile(x));
-
-                _activityTypes = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(x => x.FullName.StartsWith(typeof(Activity).Namespace))
-                    .SelectMany(x => x.GetTypes())
-                    .Where(x => !x.IsAbstract)
-                    .Where(x => !x.IsInterface)
-                    .Where(x => !x.IsGenericType)
-                    .Where(x => typeof(Activity).IsAssignableFrom(x));
-            }
-
-            return _activityTypes;
-        }
-
-        public static Activity CreateActivity(string activityTypeName)
-        {
-            if (GetActivityTypes().FirstOrDefault(x => x.FullName == activityTypeName) is Type type)
-            {
-                return (Activity)Activator.CreateInstance(type);
-            }
-
-            return null;
-        }
-
-        public static Node Create(Type type)
+        public static Node Create(TypeWrapper type)
         {
             if (type is null)
             {
                 return null;
             }
-            else if (typeof(IAction).IsAssignableFrom(type))
+            else if (typeof(IAction).IsAssignableFrom(type.WrappedType))
             {
-                return new ActionNode() { ActionType = type };
+                return new ActionNode(type);
             }
-            else if (typeof(IDecision).IsAssignableFrom(type))
+            else if (typeof(IDecision).IsAssignableFrom(type.WrappedType))
             {
                 return new DecisionNode() { DecisionType = type };
             }
-            else if (typeof(ILoop).IsAssignableFrom(type))
+            else if (typeof(ILoop).IsAssignableFrom(type.WrappedType))
             {
                 return new LoopStartNode() { LoopType = type };
             }
-            else if (Activator.CreateInstance(type) is Node node)
+            else if (Activator.CreateInstance(type.WrappedType) is Node node)
             {
                 return node;
             }
@@ -131,7 +94,5 @@ namespace Roro.Workflow
                 return null;
             }
         }
-
-        #endregion
     }
 }

@@ -23,7 +23,6 @@ namespace Roro.Workflow.Wpf
         public NodePropertyEditor()
         {
             InitializeComponent();
-            actionTypeComboBox.ItemsSource = Node.GetActivityTypes().Where(x => typeof(IAction).IsAssignableFrom(x)).Select(x => (XmlTypeHelper)x);
         }
 
         public NodePropertyEditor(Node node) : this()

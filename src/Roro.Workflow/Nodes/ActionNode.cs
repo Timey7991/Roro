@@ -1,6 +1,7 @@
 ﻿using Roro.Activities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Roro.Workflow
@@ -9,14 +10,14 @@ namespace Roro.Workflow
     {
         public NextPort Next { get; set; } = new NextPort();
 
-        public XmlTypeHelper ActionType
+        public TypeWrapper ActionType
         {
             get => this._actionType;
             set => this.OnPropertyChanged(ref this._actionType, value);
         }
-        private XmlTypeHelper _actionType;
+        private TypeWrapper _actionType;
 
-        public NotifyCollectionHelper<Argument> Arguments { get; } = new NotifyCollectionHelper<Argument>();
+        public ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
 
         public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 
@@ -25,9 +26,26 @@ namespace Roro.Workflow
             throw new NotImplementedException();
         }
 
+        public ActionNode()
+        {
+            this.ActionType = new TypeWrapper(typeof(object));
+        }
+
+        public ActionNode(TypeWrapper type)
+        {
+            if (typeof(IAction).IsAssignableFrom(type.WrappedType))
+            {
+                this.ActionType = type;
+            }
+            else
+            {
+                this.ActionType = new TypeWrapper(typeof(object));
+            }
+        }
+
         public void SyncArguments()
         {
-            if (Activator.CreateInstance(this.ActionType) is IAction action)
+            if (Activator.CreateInstance(this.ActionType.WrappedType) is IAction action)
             {
                 var currentArguments = new List<Argument>();
 
@@ -38,7 +56,7 @@ namespace Roro.Workflow
                         var genericType = typeof(InArgument<>).MakeGenericType(genericArgs);
                         var genericTypeInstance = Activator.CreateInstance(genericType) as InArgument;
                         genericTypeInstance.Name = prop.Name;
-                        genericTypeInstance.ArgumentType = genericArgs.First();
+                        genericTypeInstance.ArgumentType = new TypeWrapper(genericArgs.First());
                         prop.SetValue(action, genericTypeInstance);
                         currentArguments.Add(genericTypeInstance.ToNonGeneric());
                     });
@@ -50,7 +68,7 @@ namespace Roro.Workflow
                         var genericType = typeof(OutArgument<>).MakeGenericType(genericArgs);
                         var genericTypeInstance = Activator.CreateInstance(genericType) as OutArgument;
                         genericTypeInstance.Name = prop.Name;
-                        genericTypeInstance.ArgumentType = genericArgs.First();
+                        genericTypeInstance.ArgumentType = new TypeWrapper(genericArgs.First());
                         prop.SetValue(action, genericTypeInstance);
                         currentArguments.Add(genericTypeInstance.ToNonGeneric());
                     });

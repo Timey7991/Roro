@@ -109,13 +109,7 @@ namespace Roro.Workflow.Wpf
             this._nodeRects.ToList()
                 .ForEach(x =>
                 {
-                    x.Key.Rect = new NodeRect()
-                    {
-                        X = (int)(x.Value.X + offsetX),
-                        Y = (int)(x.Value.Y + offsetY),
-                        Width = x.Key.Rect.Width,
-                        Height = x.Key.Rect.Height
-                    };
+                    x.Key.SetPosition((int)(x.Value.X + offsetX), (int)(x.Value.Y + offsetY));
                 });
 
             this._pageControl.UpdateLinks();
