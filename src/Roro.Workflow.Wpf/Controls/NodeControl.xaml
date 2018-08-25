@@ -72,12 +72,17 @@
 
         <Path Style="{StaticResource ResourceKey=NodePathStyle}" />
         <TextBlock Text="{Binding Path=Name}" Style="{StaticResource ResourceKey=NodeNameStyle}" />
-
-        <!--I did not write this -->
-        <local:PortControl DataContext="{Binding Path=Ports[0]}" />
-        <local:PortControl DataContext="{Binding Path=Ports[1]}" />
-        <local:PortControl DataContext="{Binding Path=Ports[2]}" />
-        <local:PortControl DataContext="{Binding Path=Ports[3]}" />
-
+        <ItemsControl ItemsSource="{Binding Path=Ports}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:PortControl />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>

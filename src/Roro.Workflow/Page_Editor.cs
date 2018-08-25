@@ -6,6 +6,10 @@ namespace Roro.Workflow
 {
     public partial class Page
     {
+        public const int GRID_SIZE = 20;
+
+        public const string MAIN_PAGE_NAME = "Main";
+
         private Stack<string> _undoStack { get; } = new Stack<string>();
 
         private Stack<string> _redoStack { get; } = new Stack<string>();
@@ -21,14 +25,14 @@ namespace Roro.Workflow
                 var xmlNodes = this._undoStack.Peek();
                 var objNodes = XmlSerializerHelper.ToObject<Node[]>(xmlNodes);
 
-                this.Nodes.Clear();
-                objNodes.ToList().ForEach(x => this.Nodes.Add(x));
+                this._nodes.Clear();
+                objNodes.ToList().ForEach(x => this._nodes.Add(x));
             }
         }
 
         public void CommitPendingChanges()
         {
-            var xmlNodes = XmlSerializerHelper.ToString(this.Nodes.ToArray());
+            var xmlNodes = XmlSerializerHelper.ToString(this._nodes.ToArray());
             if (!this.CanUndo || xmlNodes != this._undoStack.Peek())
             {
                 this._undoStack.Push(xmlNodes);
@@ -36,12 +40,11 @@ namespace Roro.Workflow
             }
         }
 
-        public void AddNode(Node node)
+        public void Add(IEditableNode node)
         {
-            if (node is StartNode startNode)
+            if (node is StartNode)
             {
-                this.Nodes.Where(x => x is StartNode && x != startNode).ToList()
-                    .ForEach(x => this.Nodes.Remove(x));
+                this._nodes.Where(x => x is StartNode).ToList().ForEach(x => this._nodes.Remove(x));
             }
             if (node is LoopStartNode loopStartNode)
             {
@@ -49,18 +52,10 @@ namespace Roro.Workflow
                 loopEndNode.LoopStart.To = loopStartNode.Id;
                 loopStartNode.LoopEnd.To = loopEndNode.Id;
                 loopEndNode.Rect = loopStartNode.Rect;
-                loopEndNode.SetPosition(loopStartNode.Rect.X, loopStartNode.Rect.Y + 12 * Page.GRID_SIZE);
-                this.AddNode(loopEndNode);
+                loopEndNode.SetLocation(loopStartNode.Rect.X, loopStartNode.Rect.Y + 12 * Page.GRID_SIZE);
+                this._nodes.Add(loopEndNode);
             }
-        }
-
-        public void RemoveNode(Node node)
-        {
-            if (node is StartNode && this.Nodes.Count(x => x is StartNode) == 1)
-            {
-                return;
-            }
-            this.Nodes.Remove(node);
+            this._nodes.Add((Node)node);
         }
 
         public string Cut()
@@ -72,15 +67,15 @@ namespace Roro.Workflow
 
         public string Copy()
         {
-            this.Nodes.Where(x => x is LoopStartNode).Cast<LoopStartNode>().ToList()
-                .ForEach(ls => this.Nodes.Where(x => x.Id == ls.LoopEnd.To).ToList()
+            this._nodes.Where(x => x is LoopStartNode).Cast<LoopStartNode>().ToList()
+                .ForEach(ls => this._nodes.Where(x => x.Id == ls.LoopEnd.To).ToList()
                     .ForEach(le => le.Selected = true));
 
-            this.Nodes.Where(x => x is LoopEndNode).Cast<LoopEndNode>().ToList()
-                .ForEach(le => this.Nodes.Where(x => x.Id == le.LoopStart.To).ToList()
+            this._nodes.Where(x => x is LoopEndNode).Cast<LoopEndNode>().ToList()
+                .ForEach(le => this._nodes.Where(x => x.Id == le.LoopStart.To).ToList()
                     .ForEach(ls => ls.Selected = true));
 
-            var objNodes = this.SelectedNodes.ToArray();
+            var objNodes = this.SelectedNodes.Cast<Node>().ToArray();
             var xmlNodes = XmlSerializerHelper.ToString(objNodes);
             if (objNodes.Count() > 0)
             {
@@ -99,13 +94,17 @@ namespace Roro.Workflow
 
                 objNodes.ToList().ForEach(x => x.Id = Guid.NewGuid()); // assign new node.Id
 
-                objNodes.SelectMany(x => x.Ports).ToList() // assign new node.Id to port.To
+                objNodes.SelectMany(x => x.Ports).Cast<Port>().ToList() // assign ehe new node.Id to port.To
                     .ForEach(p => p.To = objNodeIds.TryGetValue(p.To, out Node n) ? n.Id : Guid.Empty);
 
                 if (objNodes.Count() > 0)
                 {
                     this.CommitPendingChanges();
-                    objNodes.ToList().ForEach(x => this.Nodes.Add(x));
+                    if (objNodes.FirstOrDefault(x => x is StartNode) is StartNode)
+                    {
+                        this._nodes.Remove((Node)this.StartNode);
+                    }
+                    objNodes.ToList().ForEach(x => this._nodes.Add(x));
                     this.CommitPendingChanges();
                 }
             }
@@ -117,21 +116,21 @@ namespace Roro.Workflow
 
         public void Delete()
         {
-            this.Nodes.Where(x => x is StartNode).ToList()
+            this._nodes.Where(x => x is StartNode).ToList()
                 .ForEach(x => x.Selected = false);
 
-            this.Nodes.Where(x => x is LoopStartNode).Cast<LoopStartNode>().ToList()
-                .ForEach(ls => this.Nodes.Where(x => x.Id == ls.LoopEnd.To).ToList()
+            this._nodes.Where(x => x is LoopStartNode).Cast<LoopStartNode>().ToList()
+                .ForEach(ls => this._nodes.Where(x => x.Id == ls.LoopEnd.To).ToList()
                     .ForEach(le => le.Selected = true));
 
-            this.Nodes.Where(x => x is LoopEndNode).Cast<LoopEndNode>().ToList()
-                .ForEach(le => this.Nodes.Where(x => x.Id == le.LoopStart.To).ToList()
+            this._nodes.Where(x => x is LoopEndNode).Cast<LoopEndNode>().ToList()
+                .ForEach(le => this._nodes.Where(x => x.Id == le.LoopStart.To).ToList()
                     .ForEach(ls => ls.Selected = true));
 
             if (this.SelectedNodes.Count() > 0)
             {
                 this.CommitPendingChanges();
-                this.SelectedNodes.ToList().ForEach(x => this.Nodes.Remove(x));
+                this.SelectedNodes.Cast<Node>().ToList().ForEach(x => this._nodes.Remove(x));
                 this.CommitPendingChanges();
             }
         }
@@ -141,7 +140,7 @@ namespace Roro.Workflow
             if (this.CanUndo)
             {
                 var xmlPeekNodes = this._undoStack.Peek();
-                var xmlThisNodes = XmlSerializerHelper.ToString(this.Nodes.ToArray());
+                var xmlThisNodes = XmlSerializerHelper.ToString(this._nodes.ToArray());
 
                 if (xmlThisNodes == xmlPeekNodes) // nothing changed since the last commit.
                 {
@@ -151,11 +150,11 @@ namespace Roro.Workflow
                 }
 
                 var objNodes = XmlSerializerHelper.ToObject<Node[]>(this._undoStack.Pop());
-                var xmlNodes = XmlSerializerHelper.ToString(this.Nodes.ToArray());
+                var xmlNodes = XmlSerializerHelper.ToString(this._nodes.ToArray());
                 this._redoStack.Push(xmlNodes);
 
-                this.Nodes.Clear();
-                objNodes.ToList().ForEach(x => this.Nodes.Add(x));
+                this._nodes.Clear();
+                objNodes.ToList().ForEach(x => this._nodes.Add(x));
             }
         }
 
@@ -164,11 +163,11 @@ namespace Roro.Workflow
             if (this.CanRedo)
             {
                 var objNodes = XmlSerializerHelper.ToObject<Node[]>(this._redoStack.Pop());
-                var xmlNodes = XmlSerializerHelper.ToString(this.Nodes.ToArray());
+                var xmlNodes = XmlSerializerHelper.ToString(this._nodes.ToArray());
                 this._undoStack.Push(xmlNodes);
 
-                this.Nodes.Clear();
-                objNodes.ToList().ForEach(x => this.Nodes.Add(x));
+                this._nodes.Clear();
+                objNodes.ToList().ForEach(x => this._nodes.Add(x));
             }
         }
     }

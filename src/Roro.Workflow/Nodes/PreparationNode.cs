@@ -9,7 +9,7 @@ namespace Roro.Workflow
 
         public List<Argument> Arguments { get; set; } = new List<Argument>();
 
-        public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
+        public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {

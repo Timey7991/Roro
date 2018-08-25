@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Roro.Workflow
 {
@@ -6,7 +7,7 @@ namespace Roro.Workflow
     {
         public override bool CanEndLink => false;
 
-        public override PortAnchor[] Anchors => new PortAnchor[] { };
+        public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { };
 
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {

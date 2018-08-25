@@ -43,7 +43,7 @@ namespace Roro.Workflow
 
         public override int GetHashCode()
         {
-            return this.WrappedType?.GetHashCode() ?? base.GetHashCode();
+            return this.WrappedType.GetHashCode();
         }
     }
 }

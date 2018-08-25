@@ -35,13 +35,12 @@
                                           Focusable="True"
                                           AllowDrop="True"
                                           Loaded="myCanvasNodes_Loaded"
-                                          DataContextChanged="myCanvasNodes_DataContextChanged"
-                                          />
+                                          DataContextChanged="myCanvasNodes_DataContextChanged" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <local:NodeControl Focusable="True" />
+                        <local:NodeControl />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemContainerStyle>

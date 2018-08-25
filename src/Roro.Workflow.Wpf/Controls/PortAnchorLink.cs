@@ -4,9 +4,9 @@ namespace Roro.Workflow.Wpf
 {
     public class PortAnchorLink
     {
-        public Port SourcePort { get; }
+        public IEditablePort SourcePort { get; }
 
-        public Node TargetNode { get; }
+        public IEditableNode TargetNode { get; }
 
         public PortAnchor SourcePortAnchor { get; }
 
@@ -18,7 +18,7 @@ namespace Roro.Workflow.Wpf
 
         public double VectorLength => (EndPoint - StartPoint).Length;
 
-        public PortAnchorLink(Port sourcePort, PortAnchor sourcePortAnchor, Node targetNode, PortAnchor targetNodeAnchor)
+        public PortAnchorLink(IEditablePort sourcePort, PortAnchor sourcePortAnchor, IEditableNode targetNode, PortAnchor targetNodeAnchor)
         {
             this.SourcePort = sourcePort;
             this.SourcePortAnchor = sourcePortAnchor;

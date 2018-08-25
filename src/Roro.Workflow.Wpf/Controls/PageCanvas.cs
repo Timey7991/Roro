@@ -8,9 +8,9 @@ namespace Roro.Workflow.Wpf
 {
     public class PageCanvas : Canvas
     {
-        private PageControl _pageControl => VisualTreeHelperEx.GetAncestor<PageControl>(this);
+        private IEditablePage _page => this.DataContext as IEditablePage;
 
-        private Page _page => this.DataContext as Page;
+        private PageControl _pageControl => VisualTreeHelperEx.GetAncestor<PageControl>(this);
 
         #region MOUSE
 
@@ -51,9 +51,11 @@ namespace Roro.Workflow.Wpf
         private void PageCanvas_MouseMove_SelectingMany(object sender, MouseEventArgs e)
         {
             var mouseMovePoint = e.GetPosition(this);
-            var rect = new Rect();
-            rect.X = Math.Min(this._mouseDownPoint.X, mouseMovePoint.X);
-            rect.Y = Math.Min(this._mouseDownPoint.Y, mouseMovePoint.Y);
+            var rect = new Rect
+            {
+                X = Math.Min(this._mouseDownPoint.X, mouseMovePoint.X),
+                Y = Math.Min(this._mouseDownPoint.Y, mouseMovePoint.Y)
+            };
             rect.Width = Math.Max(this._mouseDownPoint.X, mouseMovePoint.X) - rect.X;
             rect.Height = Math.Max(this._mouseDownPoint.Y, mouseMovePoint.Y) - rect.Y;
             this._pageControl.SelectingRect = rect;
@@ -144,17 +146,11 @@ namespace Roro.Workflow.Wpf
         {
             if (e.Data.GetData(typeof(TypeWrapper)) is TypeWrapper type)
             {
-                if (Node.Create(type) is Node node)
+                if (Node.Create(type) is IEditableNode node)
                 {
                     this._page.CommitPendingChanges();
-                    node.Rect = new NodeRect()
-                    {
-                        X = (int)e.GetPosition(this).X - node.Rect.Width / 2,
-                        Y = (int)e.GetPosition(this).Y - node.Rect.Height / 2,
-                        Width = node.Rect.Width,
-                        Height = node.Rect.Height
-                    };
-                    this._page.Nodes.Add(node);
+                    node.SetLocation((int)e.GetPosition(this).X - node.Rect.Width / 2, (int)e.GetPosition(this).Y - node.Rect.Height / 2);
+                    this._page.Add(node);
                     this._page.CommitPendingChanges();
                 }
             }

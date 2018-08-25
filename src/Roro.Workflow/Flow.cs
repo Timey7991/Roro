@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -6,10 +7,10 @@ using System.Xml.Serialization;
 
 namespace Roro.Workflow
 {
-    public sealed class Flow : NotifyPropertyHelper
+    public sealed class Flow : NotifyPropertyHelper, IEditableFlow
     {
         [XmlAttribute]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Name
         {
@@ -18,29 +19,22 @@ namespace Roro.Workflow
         }
         private string _name;
 
-        public ObservableCollection<Page> Pages { get; } = new ObservableCollection<Page>();
+        [XmlAttribute("Pages")]
+        public ObservableCollection<Page> _pages { get; } = new ObservableCollection<Page>();
 
-        public Page MainPage => this.Pages.First(x => x.Name == Page.MAIN_PAGE_NAME);
+        public IEnumerable<IEditablePage> Pages => this._pages;
 
-        public Page ExecutingPage
-        {
-            get => this._executingPage;
-            private set => this.OnPropertyChanged(ref this._executingPage, value);
-        }
-        private Page _executingPage;
-
-        public Node ExecutingNode
-        {
-            get => this._executingNode;
-            private set => this.OnPropertyChanged(ref this._executingNode, value);
-        }
-        private Node _executingNode;
+        public IEditablePage MainPage => this._pages.First(x => x.Name == Page.MAIN_PAGE_NAME);
 
         private Flow()
         {
-            this.Id = Guid.NewGuid();
-            this.Name = string.Empty;
-            this.Pages.CollectionChanged += Pages_CollectionChanged;
+            this._pages.CollectionChanged += Pages_CollectionChanged;
+        }
+
+        public Flow(string name) : this()
+        {
+            this.Name = name;
+            this._pages.Add(new Page(Page.MAIN_PAGE_NAME));
         }
 
         private void Pages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -63,31 +57,18 @@ namespace Roro.Workflow
             }
         }
 
-        public Flow(string name) : this()
+        public void AddPage(IEditablePage page)
         {
-            this.Name = name;
-            this.Pages.Add(new Page("Main"));
-
-            // test: add pages
-            var count = RandomHelper.Next(2, 10);
-            for (var i = 1; i < count; i++)
-            {
-                this.AddPage(new Page("Page " + i));
-            }
+            this._pages.Add((Page)page);
         }
 
-        public void AddPage(Page page)
-        {
-            this.Pages.Add(page);
-        }
-
-        public void RemovePage(Page page)
+        public void RemovePage(IEditablePage page)
         {
             if (page == this.MainPage)
             {
                 return;
             }
-            this.Pages.Remove(page);
+            this._pages.Remove((Page)page);
         }
     }
 }

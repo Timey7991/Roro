@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -7,11 +6,11 @@ namespace Roro.Workflow.Wpf
 {
     public partial class PortControl : UserControl
     {
+        private IEditablePort _port => this.DataContext as IEditablePort;
+
         private PageControl _pageControl => VisualTreeHelperEx.GetAncestor<PageControl>(this);
 
         private Canvas _pageCanvas => VisualTreeHelperEx.GetAncestor<Canvas>(this);
-
-        private Port _port => this.DataContext as Port;
 
         public PortControl()
         {
@@ -61,11 +60,11 @@ namespace Roro.Workflow.Wpf
             if (this._pageCanvas.InputHitTest(mouseUpPoint) is DependencyObject depObj &&
                 VisualTreeHelperEx.GetAncestor<NodeControl>(depObj) is NodeControl nodeControl)
             {
-                this._port.To = (nodeControl.DataContext as Node).Id;
+                this._port.Connect(nodeControl.DataContext as IEditableNode);
             }
             else
             {
-                this._port.To = Guid.Empty;
+                this._port.Connect(null);
             }
 
             this._pageControl.LinkStartingPoint = new Point();

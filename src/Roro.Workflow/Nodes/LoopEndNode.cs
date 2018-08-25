@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Roro.Workflow
 {
@@ -8,7 +9,7 @@ namespace Roro.Workflow
 
         public LoopStartPort LoopStart { get; set; } = new LoopStartPort();
 
-        public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Top };
+        public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Top };
 
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {

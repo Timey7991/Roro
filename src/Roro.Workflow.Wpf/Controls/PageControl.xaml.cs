@@ -11,7 +11,7 @@ namespace Roro.Workflow.Wpf
 {
     public partial class PageControl : UserControl, INotifyPropertyChanged
     {
-        private Page _page => this.DataContext as Page;
+        private IEditablePage _page => this.DataContext as IEditablePage;
 
         public Rect SelectingRect
         {
@@ -54,7 +54,7 @@ namespace Roro.Workflow.Wpf
 
         public void UpdateLinks()
         {
-            var pathFinder = new PathFinder(this._page.Nodes);
+            var pathFinder = new PathFinder(this._page.Nodes.Select(x => x.Rect));
             myCanvasLink.Children.Clear();
             this._page.Nodes.ToList().ForEach(sourceNode =>
                 sourceNode.Ports.ToList().ForEach(sourcePort =>

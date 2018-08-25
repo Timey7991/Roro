@@ -58,29 +58,29 @@ namespace Roro.Workflow.Wpf
 
         private Guid _session;
 
-        public PathFinder(IEnumerable<Node> nodes)
+        public PathFinder(IEnumerable<NodeRect> rects)
         {
-            this.CreateMap(nodes);
+            this.CreateMap(rects);
         }
 
-        private void CreateMap(IEnumerable<Node> nodes)
+        private void CreateMap(IEnumerable<NodeRect> rects)
         {
             var mapWidth = 0;
             var mapHeight = 0;
-            foreach (var node in nodes)
+            foreach (var rect in rects)
             {
-                mapWidth = Math.Max(mapWidth, 2 + (node.Rect.X + node.Rect.Width) / Page.GRID_SIZE);
-                mapHeight = Math.Max(mapHeight, 2 + (node.Rect.Y + node.Rect.Height) / Page.GRID_SIZE);
+                mapWidth = Math.Max(mapWidth, 2 + (rect.X + rect.Width) / Page.GRID_SIZE);
+                mapHeight = Math.Max(mapHeight, 2 + (rect.Y + rect.Height) / Page.GRID_SIZE);
             }
             this._map = new Map(mapWidth, mapHeight);
-            foreach (var node in nodes)
+            foreach (var rect in rects)
             {
-                var x = node.Rect.X / Page.GRID_SIZE;
-                var right = x + node.Rect.Width / Page.GRID_SIZE;
+                var x = rect.X / Page.GRID_SIZE;
+                var right = x + rect.Width / Page.GRID_SIZE;
                 for (; x <= right; x++)
                 {
-                    var y = node.Rect.Y / Page.GRID_SIZE;
-                    var bottom = y + node.Rect.Height / Page.GRID_SIZE;
+                    var y = rect.Y / Page.GRID_SIZE;
+                    var bottom = y + rect.Height / Page.GRID_SIZE;
                     for (; y <= bottom; y++)
                     {
                         if (x < 0 || y < 0 || x > mapWidth || y > mapHeight)

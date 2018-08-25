@@ -1,34 +1,21 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Roro.Workflow
 {
-    public abstract class Port : NotifyPropertyHelper
+    public abstract class Port : NotifyPropertyHelper, IEditablePort
     {
         [XmlAttribute]
         public Guid To
         {
             get => this._to;
-            set
-            {
-                if (this.ParentNode?.ParentPage?.Nodes.FirstOrDefault(x => x.Id == value) is Node targetNode)
-                {
-                    if (targetNode.CanEndLink)
-                    {
-                        OnPropertyChanged(ref this._to, value);
-                    }
-                }
-                else
-                {
-                    OnPropertyChanged(ref this._to, value);
-                }
-            }
+            set => this.OnPropertyChanged(ref this._to, value);
         }
         private Guid _to;
 
         [XmlIgnore]
-        public Node ParentNode { get; internal set; }
+        public IEditableNode ParentNode { get; internal set; }
 
         public virtual string Text => string.Empty;
 
@@ -42,11 +29,23 @@ namespace Roro.Workflow
 
         public abstract PortAnchor DefaultAnchor { get; }
 
-        public abstract PortAnchor[] Anchors { get; }
+        public abstract IEnumerable<PortAnchor> Anchors { get; }
 
         protected Port()
         {
             this.CurrentAnchor = this.DefaultAnchor;
+        }
+
+        public void Connect(IEditableNode node)
+        {
+            if (node is null)
+            {
+                this.To = Guid.Empty;
+            }
+            else if (node.CanEndLink)
+            {
+                this.To = node.Id;
+            }
         }
     }
 }

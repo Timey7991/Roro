@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Roro.Workflow
 {
@@ -20,7 +21,7 @@ namespace Roro.Workflow
             set => this.OnPropertyChanged(ref this._pageName, value);
         }
 
-        public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
+        public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {

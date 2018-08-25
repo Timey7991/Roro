@@ -8,6 +8,6 @@ namespace Roro.Workflow
 
         public override PortAnchor DefaultAnchor => PortAnchor.Bottom;
 
-        public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Bottom };
+        public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Bottom };
     }
 }

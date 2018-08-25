@@ -8,13 +8,11 @@ namespace Roro.Workflow.Wpf
 {
     public partial class NodeControl : UserControl
     {
+        private IEditableNode _node => this.DataContext as IEditableNode;
+
         private PageControl _pageControl => VisualTreeHelperEx.GetAncestor<PageControl>(this);
 
         private Canvas _pageCanvas => VisualTreeHelperEx.GetAncestor<Canvas>(this);
-
-        private Page _page => this._node.ParentPage;
-
-        private Node _node => this.DataContext as Node;
 
         public NodeControl()
         {
@@ -61,7 +59,7 @@ namespace Roro.Workflow.Wpf
             }
             else
             {
-                this._page.Nodes.Where(x => x.Selected).ToList()
+                this._node.ParentPage.Nodes.Where(x => x.Selected).ToList()
                     .ForEach(x => x.Selected = false);
                 this._node.Selected = true;
             }
@@ -77,7 +75,7 @@ namespace Roro.Workflow.Wpf
             this.MouseLeftButtonUp -= NodeControl_MouseLeftButtonUp_MoveCancel;
         }
 
-        private Dictionary<Node, Point> _nodeRects;
+        private Dictionary<IEditableNode, Point> _nodeLocations;
 
         private void NodeControl_MouseMove_MoveStart(object sender, MouseEventArgs e)
         {
@@ -88,17 +86,17 @@ namespace Roro.Workflow.Wpf
             this.MouseMove += NodeControl_MouseMove_Moving;
             this.MouseLeftButtonUp += NodeControl_MouseLeftButtonUp_MoveEnd;
 
-            this._nodeRects = new Dictionary<Node, Point>();
+            this._nodeLocations = new Dictionary<IEditableNode, Point>();
             if (!this._node.Selected)
             {
-                this._page.Nodes.Where(x => x.Selected).ToList()
+                this._node.ParentPage.Nodes.Where(x => x.Selected).ToList()
                     .ForEach(x => x.Selected = false);
                 this._node.Selected = true;
             }
-            this._page.Nodes.Where(x => x.Selected).ToList()
-                .ForEach(x => this._nodeRects.Add(x, new Point(x.Rect.X, x.Rect.Y)));
+            this._node.ParentPage.Nodes.Where(x => x.Selected).ToList()
+                .ForEach(x => this._nodeLocations.Add(x, new Point(x.Rect.X, x.Rect.Y)));
 
-            this._page.CommitPendingChanges();
+            this._node.ParentPage.CommitPendingChanges();
         }
 
         private void NodeControl_MouseMove_Moving(object sender, MouseEventArgs e)
@@ -106,10 +104,10 @@ namespace Roro.Workflow.Wpf
             var mouseMovePoint = e.GetPosition(this._pageCanvas);
             var offsetX = mouseMovePoint.X - this._mouseDownPoint.X;
             var offsetY = mouseMovePoint.Y - this._mouseDownPoint.Y;
-            this._nodeRects.ToList()
+            this._nodeLocations.ToList()
                 .ForEach(x =>
                 {
-                    x.Key.SetPosition((int)(x.Value.X + offsetX), (int)(x.Value.Y + offsetY));
+                    x.Key.SetLocation((int)(x.Value.X + offsetX), (int)(x.Value.Y + offsetY));
                 });
 
             this._pageControl.UpdateLinks();
@@ -122,7 +120,7 @@ namespace Roro.Workflow.Wpf
             //
             this.ReleaseMouseCapture();
 
-            this._page.CommitPendingChanges();
+            this._node.ParentPage.CommitPendingChanges();
         }
 
         #endregion

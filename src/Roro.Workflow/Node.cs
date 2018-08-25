@@ -1,16 +1,17 @@
 ﻿using Roro.Activities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
 namespace Roro.Workflow
 {
-    public abstract class Node : NotifyPropertyHelper
+    public abstract class Node : NotifyPropertyHelper, IEditableNode
     {
         [XmlAttribute]
         public Guid Id { get; set; }
 
-        public string Name
+        public virtual string Name
         {
             get => this._name;
             set => this.OnPropertyChanged(ref this._name, value);
@@ -32,25 +33,24 @@ namespace Roro.Workflow
         }
         private NodeRect _bounds;
 
-        public void SetPosition(int x, int y) => this.Rect = new NodeRect() { X = x, Y = y, Width = this.Rect.Width, Height = this.Rect.Height };
+        public void SetLocation(int x, int y) => this.Rect = new NodeRect() { X = x, Y = y, Width = this.Rect.Width, Height = this.Rect.Height };
 
         [XmlIgnore]
-        public Port[] Ports
+        public IEnumerable<IEditablePort> Ports
         {
             get
             {
                 return this.GetType().GetProperties()
                     .Where(x => typeof(Port).IsAssignableFrom(x.PropertyType))
                     .Select(x => x.GetValue(this))
-                    .Cast<Port>()
-                    .ToArray();
+                    .Cast<Port>();
             }
         }
 
-        public abstract PortAnchor[] Anchors { get; }
+        public abstract IEnumerable<PortAnchor> Anchors { get; }
 
         [XmlIgnore]
-        public Page ParentPage { get; internal set; }
+        public IEditablePage ParentPage { get; internal set; }
 
         public virtual bool CanEndLink => true;
 

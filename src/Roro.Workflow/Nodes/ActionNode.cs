@@ -19,7 +19,7 @@ namespace Roro.Workflow
 
         public ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
 
-        public override PortAnchor[] Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
+        public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {
@@ -28,7 +28,7 @@ namespace Roro.Workflow
 
         public ActionNode()
         {
-            this.ActionType = new TypeWrapper(typeof(object));
+
         }
 
         public ActionNode(TypeWrapper type)
@@ -36,16 +36,17 @@ namespace Roro.Workflow
             if (typeof(IAction).IsAssignableFrom(type.WrappedType))
             {
                 this.ActionType = type;
+                this.Name = type.Name;
             }
             else
             {
-                this.ActionType = new TypeWrapper(typeof(object));
+                throw new ArgumentException("The type should implement IAction interface.", "type");
             }
         }
 
         public void SyncArguments()
         {
-            if (Activator.CreateInstance(this.ActionType.WrappedType) is IAction action)
+            if (this.ActionType is TypeWrapper && Activator.CreateInstance(this.ActionType.WrappedType) is IAction action)
             {
                 var currentArguments = new List<Argument>();
 
