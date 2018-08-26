@@ -119,7 +119,7 @@ namespace Roro.Workflow.Wpf
             var stopWatch = Stopwatch.StartNew();
             var tileQueue = new PriorityQueue<Tile>();
             tileQueue.Enqueue(startTile, startTile.Priority);
-            while (stopWatch.ElapsedMilliseconds < 10 && tileQueue.Count > 0)
+            while (stopWatch.ElapsedMilliseconds < 50 && tileQueue.Count > 0)
             {
                 var currentTile = tileQueue.Dequeue();
                 if (currentTile == endTile)

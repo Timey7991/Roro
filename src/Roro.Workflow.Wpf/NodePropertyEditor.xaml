@@ -7,7 +7,7 @@
         xmlns:ro="clr-namespace:Roro.Workflow;assembly=Roro.Workflow"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=ro:ActionNode}"
+        d:DataContext="{d:DesignInstance Type=ro:Node}"
         Title="NodePropertyEditor" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -25,19 +25,16 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Text="Name"
-                   Margin="4"
                    Grid.Row="0"
                    Grid.Column="0" />
         <TextBox Text="{Binding Path=Name}"
-                 Margin="4"
                  Grid.Row="0"
                  Grid.Column="1" />
 
         <TextBlock Text="Action Type"
-                   Margin="4"
                    Grid.Row="1"
                    Grid.Column="0" />
-        <ComboBox Margin="4"
+        <ComboBox x:Name="ActionTypeComboBox"
                   ItemsSource="{x:Static ro:ActivityHelper.ActionTypes}"
                   SelectedItem="{Binding Path=ActionType}"
                   SelectionChanged="actionTypeComboBox_SelectionChanged"
@@ -45,8 +42,7 @@
                   Grid.Column="1">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type ro:TypeWrapper}">
-                    <TextBlock Text="{Binding Path=WrappedType.FullName}"
-                               Margin="4" />
+                    <TextBlock Text="{Binding Path=WrappedType.FullName}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>

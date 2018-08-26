@@ -13,5 +13,7 @@ namespace Roro.Workflow
         void AddPage(IEditablePage page);
 
         void RemovePage(IEditablePage page);
+
+        string ToXml();       
     }
 }

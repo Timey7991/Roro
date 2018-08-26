@@ -19,7 +19,7 @@ namespace Roro.Workflow
         }
         private string _name;
 
-        [XmlAttribute("Nodes")]
+        [XmlArray("Nodes")]
         public ObservableCollection<Node> _nodes { get; } = new ObservableCollection<Node>();
 
         public IEnumerable<IEditableNode> Nodes => this._nodes;

@@ -51,7 +51,7 @@ namespace Roro.Workflow.Wpf
                 this.UpdateLinks();
             }
         }
-
+        
         public void UpdateLinks()
         {
             var pathFinder = new PathFinder(this._page.Nodes.Select(x => x.Rect));
@@ -66,15 +66,19 @@ namespace Roro.Workflow.Wpf
                         {
                             foreach (var targetNodeAnchor in targetNode.Anchors)
                             {
-                                anchorLinks.Add(new PortAnchorLink(sourcePort, sourcePortAnchor, targetNode, targetNodeAnchor));
+                                var portAnchorLink = new PortAnchorLink(sourcePort, sourcePortAnchor, targetNode, targetNodeAnchor);
+                                portAnchorLink.Path = pathFinder.GetPath(portAnchorLink.StartPoint, portAnchorLink.EndPoint);
+                                anchorLinks.Add(portAnchorLink);
                             }
                         }
-                        if (anchorLinks.OrderBy(x => x.VectorLength).FirstOrDefault() is PortAnchorLink anchorLink)
+                        if (anchorLinks
+                                .OrderBy(x => x.Path.Split('Q').Length)
+                                .ThenBy(x => x.Path.Length).FirstOrDefault() is PortAnchorLink anchorLink)
                         {
                             sourcePort.CurrentAnchor = anchorLink.SourcePortAnchor;
                             myCanvasLink.Children.Add(new Path()
                             {
-                                Data = Geometry.Parse(pathFinder.GetPath(anchorLink.StartPoint, anchorLink.EndPoint)),
+                                Data = Geometry.Parse(anchorLink.Path),
                                 Stroke = Brushes.Gray
                             });
                         }

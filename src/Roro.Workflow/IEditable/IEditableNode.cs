@@ -9,13 +9,11 @@ namespace Roro.Workflow
 
         string Name { get; }
 
+        bool Selected { get; set; }
+
         NodeRect Rect { get; }
 
         void SetLocation(int x, int y);
-
-        bool Selected { get; set; }
-
-        bool CanEndLink { get; }
 
         IEnumerable<IEditablePort> Ports { get; } 
 

@@ -25,14 +25,14 @@ namespace Roro.Workflow.Wpf
             InitializeComponent();
         }
 
-        public NodePropertyEditor(Node node) : this()
+        public NodePropertyEditor(IEditableNode node) : this()
         {
             this.DataContext = node;
         }
 
         private void actionTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            (this.DataContext as ActionNode).SyncArguments();
+
         }
     }
 }

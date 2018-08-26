@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Security;
 using System.Xml.Serialization;
 
@@ -33,11 +32,6 @@ namespace Roro.Workflow
                         new TypeWrapper(typeof(DataTable)),
                         new TypeWrapper(typeof(SecureString))
                     };
-        }
-
-        public static IEnumerable<ArgumentDirection> Directions
-        {
-            get => Enum.GetValues(typeof(ArgumentDirection)).Cast<ArgumentDirection>();
         }
     }
 }

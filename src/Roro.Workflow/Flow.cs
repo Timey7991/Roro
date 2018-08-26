@@ -19,7 +19,7 @@ namespace Roro.Workflow
         }
         private string _name;
 
-        [XmlAttribute("Pages")]
+        [XmlArray("Pages")]
         public ObservableCollection<Page> _pages { get; } = new ObservableCollection<Page>();
 
         public IEnumerable<IEditablePage> Pages => this._pages;
@@ -69,6 +69,16 @@ namespace Roro.Workflow
                 return;
             }
             this._pages.Remove((Page)page);
+        }
+
+        public string ToXml()
+        {
+            return XmlSerializerHelper.ToString(this);
+        }
+
+        public static Flow FromXml(string xmlFlow)
+        {
+            return XmlSerializerHelper.ToObject<Flow>(xmlFlow);
         }
     }
 }

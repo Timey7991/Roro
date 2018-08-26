@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -99,6 +101,7 @@ namespace Roro.Workflow.Wpf
             this._node.ParentPage.CommitPendingChanges();
         }
 
+        private Timer _moveTimer;
         private void NodeControl_MouseMove_Moving(object sender, MouseEventArgs e)
         {
             var mouseMovePoint = e.GetPosition(this._pageCanvas);
@@ -110,7 +113,15 @@ namespace Roro.Workflow.Wpf
                     x.Key.SetLocation((int)(x.Value.X + offsetX), (int)(x.Value.Y + offsetY));
                 });
 
-            this._pageControl.UpdateLinks();
+            if (this._moveTimer == null)
+            {
+                this._moveTimer = new Timer((object state) =>
+                {
+                    this.Dispatcher.Invoke(() => this._pageControl.UpdateLinks());
+                }, null, Timeout.Infinite, Timeout.Infinite);
+            }
+            this._moveTimer.Change(100, Timeout.Infinite);
+            
         }
 
         private void NodeControl_MouseLeftButtonUp_MoveEnd(object sender, MouseButtonEventArgs e)
@@ -119,6 +130,7 @@ namespace Roro.Workflow.Wpf
             this.MouseLeftButtonUp -= NodeControl_MouseLeftButtonUp_MoveEnd;
             //
             this.ReleaseMouseCapture();
+            this._moveTimer.Change(0, Timeout.Infinite);
 
             this._node.ParentPage.CommitPendingChanges();
         }
@@ -131,10 +143,14 @@ namespace Roro.Workflow.Wpf
         {
             e.Handled = true;
 
-            if (this._node is ActionNode actionNode)
+            this._node.ParentPage.CommitPendingChanges();
+            if (new NodePropertyEditor(this._node).ShowDialog() == true)
             {
-                actionNode.SyncArguments();
-                new NodePropertyEditor(actionNode).ShowDialog();
+                this._node.ParentPage.CommitPendingChanges();
+            }
+            else
+            {
+                this._node.ParentPage.CancelPendingChanges();
             }
         }
 

@@ -14,10 +14,17 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <local:NodePickerControl Grid.Column="0" />
-        <local:FlowControl Grid.Column="1" />
+        <WrapPanel>
+            <Button Content="Open" Width="80" />
+            <Button Content="Save" Width="80" Click="SaveButton_Click" />
+            <Button Content="Add Page" Width="80" Click="Button_Click" />
+        </WrapPanel>
+        
+        <local:NodePickerControl Grid.Row="1" Grid.Column="0" />
+        <local:FlowControl Grid.Row="1" Grid.Column="1" />
     </Grid>
 </Window>

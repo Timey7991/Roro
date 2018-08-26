@@ -16,7 +16,7 @@ namespace Roro.Workflow.Wpf
 
         public Point EndPoint => GetPoint(TargetNode.Rect, TargetNodeAnchor);
 
-        public double VectorLength => (EndPoint - StartPoint).Length;
+        public string Path { get; set; }
 
         public PortAnchorLink(IEditablePort sourcePort, PortAnchor sourcePortAnchor, IEditableNode targetNode, PortAnchor targetNodeAnchor)
         {

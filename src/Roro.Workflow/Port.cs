@@ -42,7 +42,15 @@ namespace Roro.Workflow
             {
                 this.To = Guid.Empty;
             }
-            else if (node.CanEndLink)
+            else if (node is StartNode)
+            {
+                ;
+            }
+            else if (node is VariableNode)
+            {
+                ;
+            }
+            else
             {
                 this.To = node.Id;
             }

@@ -52,8 +52,6 @@ namespace Roro.Workflow
         [XmlIgnore]
         public IEditablePage ParentPage { get; internal set; }
 
-        public virtual bool CanEndLink => true;
-
         protected Node()
         {
             this.Id = Guid.NewGuid();
