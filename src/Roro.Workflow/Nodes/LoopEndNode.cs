@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roro.Workflow
 {
@@ -13,7 +14,17 @@ namespace Roro.Workflow
 
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {
-            throw new NotImplementedException();
+            var loopStartNode = this.ParentPage.Nodes
+                                    .Where(x => x.Id == this.LoopStart.To)
+                                    .Cast<LoopStartNode>().First();
+            if (loopStartNode.LoopEnded)
+            {
+                return new NodeExecutionResult(this.ParentPage, this.Next.To);
+            }
+            else
+            {
+                return new NodeExecutionResult(this.ParentPage, this.LoopStart.To);
+            }
         }
     }
 }

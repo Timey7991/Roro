@@ -20,6 +20,8 @@ namespace Roro.Workflow.Wpf
     /// </summary>
     public partial class NodePropertyEditor : Window
     {
+        private IEditableNode _node => this.DataContext as IEditableNode;
+
         public NodePropertyEditor()
         {
             InitializeComponent();
@@ -32,7 +34,7 @@ namespace Roro.Workflow.Wpf
 
         private void actionTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            this._node.SyncArguments();
         }
     }
 }

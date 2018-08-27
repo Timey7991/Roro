@@ -20,5 +20,7 @@ namespace Roro.Workflow
         IEnumerable<PortAnchor> Anchors { get; }
 
         IEditablePage ParentPage { get; }
+
+        void SyncArguments();
     }
 }

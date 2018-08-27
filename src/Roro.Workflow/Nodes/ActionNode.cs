@@ -8,90 +8,116 @@ namespace Roro.Workflow
 {
     public sealed class ActionNode : Node
     {
+        private sealed class Action : IAction { public void Execute() { } }
+
         public NextPort Next { get; set; } = new NextPort();
 
         public TypeWrapper ActionType
         {
             get => this._actionType;
-            set => this.OnPropertyChanged(ref this._actionType, value);
+            set
+            {
+                if (typeof(IAction).IsAssignableFrom(value.WrappedType))
+                {
+                    this.OnPropertyChanged(ref this._actionType, value);
+                }
+                else
+                {
+                    throw new InvalidCastException();
+                }
+            }
         }
-        private TypeWrapper _actionType;
+        private TypeWrapper _actionType = new TypeWrapper(typeof(Action));
 
         public ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 
-        public override NodeExecutionResult Execute(NodeExecutionContext context)
+        public ActionNode() : this(new TypeWrapper(typeof(Action)))
         {
-            throw new NotImplementedException();
-        }
-
-        public ActionNode()
-        {
-
+            ;
         }
 
         public ActionNode(TypeWrapper type)
         {
-            if (typeof(IAction).IsAssignableFrom(type.WrappedType))
-            {
-                this.ActionType = type;
-                this.Name = type.Name;
-            }
-            else
-            {
-                throw new ArgumentException("The type should implement IAction interface.", "type");
-            }
+            this.ActionType = type;
+            this.CreateActionTypeInstance();
+            this.Name = type.Name;
         }
 
-        public void SyncArguments()
+        public override NodeExecutionResult Execute(NodeExecutionContext context)
         {
-            if (this.ActionType is TypeWrapper && Activator.CreateInstance(this.ActionType.WrappedType) is IAction action)
+            var action = this.CreateActionTypeInstance();
+
+            var inputs = action.GetType().GetProperties()
+                .Where(prop => prop.PropertyType.GetGenericTypeDefinition() == typeof(Input<>)).ToList()
+                .Select(prop => prop.GetValue(action)).Cast<Argument>().ToList();
+
+            var outputs = action.GetType().GetProperties()
+                .Where(prop => prop.PropertyType.GetGenericTypeDefinition() == typeof(Output<>)).ToList()
+                .Select(prop => prop.GetValue(action)).Cast<Argument>().ToList();
+
+            var variables = this.ParentPage.Nodes.Where(x => x is VariableNode).Cast<VariableNode>();
+
+            // RuntimeValue = Expression (resolved using variables)
+            inputs.ForEach(input => input.RuntimeValue = input.Expression);
+
+            action.Execute();
+
+            // Expression (variable) = RuntimeValue
+            outputs.ForEach(output => output.RuntimeValue = output.RuntimeValue); // TODO
+
+            return new NodeExecutionResult(this.ParentPage, this.Next.To);
+        }
+
+        public override void SyncArguments() => this.CreateActionTypeInstance();
+
+        private IAction CreateActionTypeInstance()
+        {
+            var action = (IAction)Activator.CreateInstance(this.ActionType.WrappedType);
+
+            var arguments = new List<Argument>();
+
+            var inputs = action.GetType().GetProperties()
+                .Where(prop => prop.PropertyType.GetGenericTypeDefinition() == typeof(Input<>)).ToList();
+
+            var outputs = action.GetType().GetProperties()
+                .Where(prop => prop.PropertyType.GetGenericTypeDefinition() == typeof(Output<>)).ToList();
+
+            inputs.ForEach(prop =>
             {
-                var currentArguments = new List<Argument>();
+                var genericArgs = prop.PropertyType.GetGenericArguments();
+                var genericType = typeof(InArgument<>).MakeGenericType(genericArgs);
+                var genericTypeInstance = Activator.CreateInstance(genericType) as InArgument;
+                genericTypeInstance.Name = prop.Name;
+                genericTypeInstance.ArgumentType = new TypeWrapper(genericArgs.First());
+                prop.SetValue(action, genericTypeInstance);
+                arguments.Add(genericTypeInstance.ToNonGeneric());
+            });
 
-                action.GetType().GetProperties()
-                    .Where(prop => prop.PropertyType.GetGenericTypeDefinition() == typeof(Input<>)).ToList()
-                    .ForEach(prop => {
-                        var genericArgs = prop.PropertyType.GetGenericArguments();
-                        var genericType = typeof(InArgument<>).MakeGenericType(genericArgs);
-                        var genericTypeInstance = Activator.CreateInstance(genericType) as InArgument;
-                        genericTypeInstance.Name = prop.Name;
-                        genericTypeInstance.ArgumentType = new TypeWrapper(genericArgs.First());
-                        prop.SetValue(action, genericTypeInstance);
-                        currentArguments.Add(genericTypeInstance.ToNonGeneric());
-                    });
+            outputs.ForEach(prop =>
+            {
+                var genericArgs = prop.PropertyType.GetGenericArguments();
+                var genericType = typeof(OutArgument<>).MakeGenericType(genericArgs);
+                var genericTypeInstance = Activator.CreateInstance(genericType) as OutArgument;
+                genericTypeInstance.Name = prop.Name;
+                genericTypeInstance.ArgumentType = new TypeWrapper(genericArgs.First());
+                prop.SetValue(action, genericTypeInstance);
+                arguments.Add(genericTypeInstance.ToNonGeneric());
+            });
 
-                action.GetType().GetProperties()
-                    .Where(prop => prop.PropertyType.GetGenericTypeDefinition() == typeof(Output<>)).ToList()
-                    .ForEach(prop => {
-                        var genericArgs = prop.PropertyType.GetGenericArguments();
-                        var genericType = typeof(OutArgument<>).MakeGenericType(genericArgs);
-                        var genericTypeInstance = Activator.CreateInstance(genericType) as OutArgument;
-                        genericTypeInstance.Name = prop.Name;
-                        genericTypeInstance.ArgumentType = new TypeWrapper(genericArgs.First());
-                        prop.SetValue(action, genericTypeInstance);
-                        currentArguments.Add(genericTypeInstance.ToNonGeneric());
-                    });
-
-
-                var cachedArguments = this.Arguments;
-
-                cachedArguments.ToList().ForEach(cachedArgument =>
+            this.Arguments.ToList().ForEach(cachedArgument =>
+            {
+                if (arguments.FirstOrDefault(x => x.Name == cachedArgument.Name && x.Direction == cachedArgument.Direction) is Argument argument)
                 {
-                    if (currentArguments.FirstOrDefault(x => x.Name == cachedArgument.Name && x.Direction == cachedArgument.Direction) is Argument currentArgument)
-                    {
-                        currentArgument.Expression = cachedArgument.Expression;
-                    }
-                });
+                    argument.Expression = cachedArgument.Expression;
+                }
+            });
 
-                this.Arguments.Clear();
-                currentArguments.ToList().ForEach(x => this.Arguments.Add(x));
-            }
-            else
-            {
-                this.Arguments.Clear();
-            }
+            this.Arguments.Clear();
+            arguments.ForEach(x => this.Arguments.Add(x));
+
+            return action;
         }
     }
 }

@@ -65,6 +65,8 @@ namespace Roro.Workflow
 
         public abstract NodeExecutionResult Execute(NodeExecutionContext context);
 
+        public virtual void SyncArguments() { }
+
         public static Node Create(TypeWrapper type)
         {
             if (type is null)
@@ -77,11 +79,11 @@ namespace Roro.Workflow
             }
             else if (typeof(IDecision).IsAssignableFrom(type.WrappedType))
             {
-                return new DecisionNode() { DecisionType = type };
+                return new DecisionNode(type);
             }
             else if (typeof(ILoop).IsAssignableFrom(type.WrappedType))
             {
-                return new LoopStartNode() { LoopType = type };
+                return new LoopStartNode(type);
             }
             else if (Activator.CreateInstance(type.WrappedType) is Node node)
             {

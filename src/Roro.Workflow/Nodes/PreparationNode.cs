@@ -15,5 +15,10 @@ namespace Roro.Workflow
         {
             throw new NotImplementedException();
         }
+
+        public PreparationNode()
+        {
+            this.Name = "Assign";
+        }
     }
 }

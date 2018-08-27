@@ -1,15 +1,18 @@
 ﻿<Window x:Class="Roro.Workflow.Wpf.NodePropertyEditor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Roro.Workflow.Wpf"
         xmlns:ro="clr-namespace:Roro.Workflow;assembly=Roro.Workflow"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=ro:Node}"
         Title="NodePropertyEditor" Height="450" Width="800">
     <Grid>
+        <Grid.Resources>
+            <local:TypeOfConverter x:Key="TypeOfConverter" />
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -34,10 +37,7 @@
         <TextBlock Text="Action Type"
                    Grid.Row="1"
                    Grid.Column="0" />
-        <ComboBox x:Name="ActionTypeComboBox"
-                  ItemsSource="{x:Static ro:ActivityHelper.ActionTypes}"
-                  SelectedItem="{Binding Path=ActionType}"
-                  SelectionChanged="actionTypeComboBox_SelectionChanged"
+        <ComboBox SelectionChanged="actionTypeComboBox_SelectionChanged"
                   Grid.Row="1"
                   Grid.Column="1">
             <ComboBox.ItemTemplate>
@@ -45,6 +45,28 @@
                     <TextBlock Text="{Binding Path=WrappedType.FullName}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
+            <ComboBox.Style>
+                <Style TargetType="ComboBox">
+                    <Setter Property="Visibility" Value="Hidden" />
+                    <Style.Triggers>
+                        <DataTrigger Value="{x:Type ro:ActionNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                            <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.ActionTypes}" />
+                            <Setter Property="SelectedItem" Value="{Binding Path=ActionType}" />
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Value="{x:Type ro:DecisionNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                            <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.DecisionTypes}" />
+                            <Setter Property="SelectedItem" Value="{Binding Path=DecisionType}" />
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <DataTrigger Value="{x:Type ro:LoopStartNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                            <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.LoopTypes}" />
+                            <Setter Property="SelectedItem" Value="{Binding Path=LoopType}" />
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Style>
         </ComboBox>
 
         <DataGrid ItemsSource="{Binding Path=Arguments}"
