@@ -1,6 +1,7 @@
 ﻿using Roro.Activities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -46,6 +47,8 @@ namespace Roro.Workflow
                     .Cast<Port>();
             }
         }
+
+        public abstract ObservableCollection<Argument> Arguments { get; } 
 
         public abstract IEnumerable<PortAnchor> Anchors { get; }
 

@@ -22,6 +22,8 @@ namespace Roro.Workflow
         [XmlIgnore]
         public object RuntimeValue { get; set; }
 
+        public abstract Argument ToNonGeneric();
+
         public static IEnumerable<TypeWrapper> Types
         {
             get => new TypeWrapper[] {

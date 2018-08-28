@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Roro.Workflow
@@ -9,6 +10,8 @@ namespace Roro.Workflow
         public NextPort Next { get; set; } = new NextPort();
 
         public LoopStartPort LoopStart { get; set; } = new LoopStartPort();
+
+        public override ObservableCollection<Argument> Arguments => null;
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Top };
 

@@ -29,7 +29,7 @@ namespace Roro.Workflow
         }
         private TypeWrapper _actionType = new TypeWrapper(typeof(Action));
 
-        public ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
+        public override ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 

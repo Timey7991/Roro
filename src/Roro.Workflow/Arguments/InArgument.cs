@@ -6,7 +6,7 @@ namespace Roro.Workflow
     {
         public override ArgumentDirection Direction => ArgumentDirection.In;
 
-        public InArgument ToNonGeneric()
+        public override Argument ToNonGeneric()
         {
             return new InArgument()
             {

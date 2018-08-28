@@ -43,7 +43,7 @@ namespace Roro.Workflow
 
         private IEnumerator _loopEnumerator;
 
-        public ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
+        public override ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Top };
 

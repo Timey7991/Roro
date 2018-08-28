@@ -13,6 +13,8 @@ namespace Roro.Workflow
 
         IEnumerable<IEditableNode> SelectedNodes { get; }
 
+        IEditableFlow ParentFlow { get; }
+
         void CancelPendingChanges();
 
         void CommitPendingChanges();

@@ -29,7 +29,7 @@ namespace Roro.Workflow
         public IEditableNode StartNode => this._nodes.First(x => x is StartNode);
 
         [XmlIgnore]
-        public Flow ParentFlow { get; internal set; }
+        public IEditableFlow ParentFlow { get; internal set; }
 
         private Page()
         {

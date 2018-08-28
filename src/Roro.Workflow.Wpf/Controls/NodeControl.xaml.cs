@@ -77,6 +77,8 @@ namespace Roro.Workflow.Wpf
             this.MouseLeftButtonUp -= NodeControl_MouseLeftButtonUp_MoveCancel;
         }
 
+        private Timer _moveTimer;
+
         private Dictionary<IEditableNode, Point> _nodeLocations;
 
         private void NodeControl_MouseMove_MoveStart(object sender, MouseEventArgs e)
@@ -99,9 +101,13 @@ namespace Roro.Workflow.Wpf
                 .ForEach(x => this._nodeLocations.Add(x, new Point(x.Rect.X, x.Rect.Y)));
 
             this._node.ParentPage.CommitPendingChanges();
+
+            this._moveTimer = new Timer((object state) =>
+            {
+                this.Dispatcher.Invoke(() => this._pageControl.UpdateLinks());
+            }, null, Timeout.Infinite, Timeout.Infinite);
         }
 
-        private Timer _moveTimer;
         private void NodeControl_MouseMove_Moving(object sender, MouseEventArgs e)
         {
             var mouseMovePoint = e.GetPosition(this._pageCanvas);
@@ -113,13 +119,6 @@ namespace Roro.Workflow.Wpf
                     x.Key.SetLocation((int)(x.Value.X + offsetX), (int)(x.Value.Y + offsetY));
                 });
 
-            if (this._moveTimer == null)
-            {
-                this._moveTimer = new Timer((object state) =>
-                {
-                    this.Dispatcher.Invoke(() => this._pageControl.UpdateLinks());
-                }, null, Timeout.Infinite, Timeout.Infinite);
-            }
             this._moveTimer.Change(100, Timeout.Infinite);
             
         }

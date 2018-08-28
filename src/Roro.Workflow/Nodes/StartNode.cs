@@ -14,7 +14,7 @@ namespace Roro.Workflow
 
         public NextPort Next { get; set; } = new NextPort();
 
-        public ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
+        public override ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { };
 

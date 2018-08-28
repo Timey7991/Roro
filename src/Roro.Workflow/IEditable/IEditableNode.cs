@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Roro.Workflow
 {
@@ -16,6 +17,8 @@ namespace Roro.Workflow
         void SetLocation(int x, int y);
 
         IEnumerable<IEditablePort> Ports { get; } 
+
+        ObservableCollection<Argument> Arguments { get; }
 
         IEnumerable<PortAnchor> Anchors { get; }
 
