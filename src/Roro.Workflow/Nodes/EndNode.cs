@@ -9,7 +9,7 @@ namespace Roro.Workflow
         public override string Name
         {
             get => "End";
-            set => base.Name = value;
+            set => base.Name = this.Name;
         }
 
         public override ObservableCollection<Argument> Arguments { get; } = new ObservableCollection<Argument>();

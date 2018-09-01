@@ -26,6 +26,7 @@ namespace Roro.Workflow
                                         typeof(Port).IsAssignableFrom(x) ||
                                         typeof(Argument).IsAssignableFrom(x)).ToArray();
             }
+
             return new XmlSerializer(typeof(T), _extraTypes);
         }
 
@@ -41,7 +42,8 @@ namespace Roro.Workflow
         {
             using (var writer = new StringWriter())
             {
-                GetSerializer<T>().Serialize(writer, obj);
+                var ser = GetSerializer<T>();
+                ser.Serialize(writer, obj);
                 return writer.ToString();
             }
         }

@@ -9,7 +9,7 @@ namespace Roro.Workflow
         public override string Name
         {
             get => "Start";
-            set => base.Name = value;
+            set => base.Name = this.Name;
         }
 
         public NextPort Next { get; set; } = new NextPort();
