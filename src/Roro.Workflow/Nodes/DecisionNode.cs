@@ -35,6 +35,11 @@ namespace Roro.Workflow
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 
+        public override void Reset()
+        {
+            this.Arguments.ToList().ForEach(x => x.RuntimeValue = null);
+        }
+
         public DecisionNode() : this(new TypeWrapper(typeof(Decision)))
         {
             ;
@@ -48,6 +53,8 @@ namespace Roro.Workflow
 
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {
+            return new NodeExecutionResult(this.ParentPage, this.True.To);
+
             var decision = this.CreateDecisionTypeInstance();
 
             var inputs = decision.GetType().GetProperties()

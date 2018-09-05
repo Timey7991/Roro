@@ -17,6 +17,7 @@
     <Grid>
         <Grid.Resources>
             <local:TypeOfConverter x:Key="TypeOfConverter" />
+            <local:MultiValueEqualityConverter x:Key="MultiValueEqualityConverter" />
 
             <!--NodeNameStyle-->
             <Style x:Key="NodeNameStyle" TargetType="TextBlock">
@@ -64,6 +65,16 @@
                     <DataTrigger Binding="{Binding Path=Selected}" Value="True">
                         <Setter Property="Stroke" Value="Orange" />
                         <Setter Property="StrokeThickness" Value="2" />
+                    </DataTrigger>
+                    
+                    <DataTrigger Value="True">
+                        <DataTrigger.Binding>
+                            <MultiBinding Converter="{StaticResource ResourceKey=MultiValueEqualityConverter}">
+                                <Binding Path="" />
+                                <Binding Path="ParentPage.ParentFlow.NextNode" />
+                            </MultiBinding>
+                        </DataTrigger.Binding>
+                        <Setter Property="Fill" Value="#FFFFEB64" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

@@ -23,7 +23,7 @@
                 </Style.Triggers>
             </Style>
         </Grid.Resources>
-        <TabControl x:Name="myTabControl" ItemsSource="{Binding Path=Pages}" SelectedIndex="0">
+        <TabControl x:Name="myTabControl" ItemsSource="{Binding Path=Pages}" SelectedItem="{Binding Path=SelectedPage}">
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type ro:Page}">
                     <WrapPanel>

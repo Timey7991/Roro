@@ -15,6 +15,11 @@ namespace Roro.Workflow
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Top };
 
+        public override void Reset()
+        {
+            ;
+        }
+
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {
             var loopStartNode = this.ParentPage.Nodes

@@ -47,6 +47,14 @@ namespace Roro.Workflow
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Top };
 
+        public override void Reset()
+        {
+            this.Arguments.ToList().ForEach(x => x.RuntimeValue = null);
+            this._loop = default(ILoop);
+            this._loopEnumerator = default(IEnumerator);
+            this.LoopEnded = false;
+        }
+
         public LoopStartNode() : this(new TypeWrapper(typeof(Loop)))
         {
             ;

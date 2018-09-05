@@ -32,5 +32,7 @@ namespace Roro.Workflow
         void Undo();
 
         void Redo();
+
+        void Reset();
     }
 }

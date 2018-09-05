@@ -90,6 +90,7 @@
     <Compile Include="Controls\PortControl.xaml.cs">
       <DependentUpon>PortControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\MultiValueEqualityConverter.cs" />
     <Compile Include="Converters\TypeOfConverter.cs" />
     <Compile Include="Controls\FlowControl.xaml.cs">
       <DependentUpon>FlowControl.xaml</DependentUpon>
@@ -115,6 +116,9 @@
     <Compile Include="Controls\PortAnchorLink.cs">
       <DependentUpon>PageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\NodePropertyEditor.xaml.cs">
+      <DependentUpon>NodePropertyEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -136,6 +140,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Page Include="Controls\NodePropertyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -157,6 +165,9 @@
       <Project>{4e0879c5-5eac-4e66-8307-a549ffa93df6}</Project>
       <Name>Roro.Workflow</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Windows\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

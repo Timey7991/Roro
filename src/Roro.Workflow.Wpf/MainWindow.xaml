@@ -7,24 +7,27 @@
         xmlns:ro="clr-namespace:Roro.Workflow;assembly=Roro.Workflow"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=ro:Flow}"
-        Title="MainWindow" Height="450" Width="800">
+        Title="{Binding Path=State}" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="265" />
+            <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="250" />
         </Grid.RowDefinitions>
 
         <WrapPanel>
-            <Button Content="Open" Width="80" />
             <Button Content="Save" Width="80" Click="SaveButton_Click" />
             <Button Content="Add Page" Width="80" Click="Button_Click" />
+            <Button Content="Run" Width="80" Click="RunButton_Click" />
         </WrapPanel>
         
         <local:NodePickerControl Grid.Row="1" Grid.Column="0" />
         <local:FlowControl Grid.Row="1" Grid.Column="1" />
+        <DataGrid Grid.Row="2" Grid.Column="1"
+                  ItemsSource="{Binding Path=LogEvents}"/>
     </Grid>
 </Window>

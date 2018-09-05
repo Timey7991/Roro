@@ -28,8 +28,16 @@ namespace Roro.Workflow
 
         public IEditableNode StartNode => this._nodes.First(x => x is StartNode);
 
+        internal IEditableNode CallbackNode { get; set; }
+
         [XmlIgnore]
         public IEditableFlow ParentFlow { get; internal set; }
+
+        public void Reset()
+        {
+            this.CallbackNode = null;
+            this.Nodes.Cast<Node>().ToList().ForEach(x => x.Reset());
+        }
 
         private Page()
         {

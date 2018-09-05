@@ -64,6 +64,11 @@ namespace Roro.Workflow
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { };
 
+        public override void Reset()
+        {
+            this.RuntimeValue = null;
+        }
+
         public VariableNode()
         {
             this.VariableType = Argument.Types.First();

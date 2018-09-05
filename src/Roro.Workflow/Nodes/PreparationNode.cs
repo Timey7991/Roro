@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Roro.Workflow
 {
@@ -12,8 +13,15 @@ namespace Roro.Workflow
 
         public override IEnumerable<PortAnchor> Anchors => new PortAnchor[] { PortAnchor.Left, PortAnchor.Top };
 
+        public override void Reset()
+        {
+            this.Arguments.ToList().ForEach(x => x.RuntimeValue = null);
+        }
+
         public override NodeExecutionResult Execute(NodeExecutionContext context)
         {
+            return new NodeExecutionResult(this.ParentPage, this.Next.To);
+
             throw new NotImplementedException();
         }
 

@@ -25,5 +25,9 @@ namespace Roro.Workflow
         IEditablePage ParentPage { get; }
 
         void SyncArguments();
+
+        NodeExecutionResult Execute(NodeExecutionContext context);
+
+        void Reset();
     }
 }

@@ -55,6 +55,8 @@ namespace Roro.Workflow
         [XmlIgnore]
         public IEditablePage ParentPage { get; internal set; }
 
+        public abstract void Reset();
+
         protected Node()
         {
             this.Id = Guid.NewGuid();
