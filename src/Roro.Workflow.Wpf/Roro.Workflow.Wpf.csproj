@@ -13,13 +13,15 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -34,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Costura, Version=3.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Costura.Fody.3.1.0\lib\net46\Costura.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -136,6 +141,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -149,14 +155,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Roro.Activities.Automation\Roro.Activities.Automation.csproj">
-      <Project>{156d9e19-44ba-4128-9876-74dc47e3741b}</Project>
-      <Name>Roro.Activities.Automation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Roro.Activities.Storage\Roro.Activities.Storage.csproj">
-      <Project>{609f9e15-9644-4f13-98bf-814b981328f0}</Project>
-      <Name>Roro.Activities.Storage</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Roro.Activities\Roro.Activities.csproj">
       <Project>{FB6256DD-4ABF-4FFD-A658-9F613E4B8475}</Project>
       <Name>Roro.Activities</Name>
@@ -169,5 +167,29 @@
   <ItemGroup>
     <Folder Include="Windows\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.3.2.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.2.0\build\Fody.targets'))" />
+  </Target>
+  <Import Project="..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets')" />
+  <Import Project="..\packages\Fody.3.2.0\build\Fody.targets" Condition="Exists('..\packages\Fody.3.2.0\build\Fody.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>cd $(SolutionDir)
+cd ..
+PowerShell -command Copy-Item -Force -Path src\Roro.Activities.*\bin\Debug\*.dll -Destination bin\
+PowerShell -command Copy-Item -Force -Path src\Roro.Activities.*\bin\Debug\*.pdb -Destination bin\
+PowerShell -command Copy-Item -Force -Path src\Roro.Activities.*\bin\Debug\netstandard2.0\*.dll -Destination bin\
+PowerShell -command Copy-Item -Force -Path src\Roro.Activities.*\bin\Debug\netstandard2.0\*.pdb -Destination bin\
+PowerShell -command Remove-Item bin\Roro.Release.zip
+PowerShell -command Compress-Archive -Update -Path bin\*.exe, bin\*.dll, bin\*.winmd, LICENSE -DestinationPath bin\Roro.Release.zip</PostBuildEvent>
+  </PropertyGroup>
 </Project>

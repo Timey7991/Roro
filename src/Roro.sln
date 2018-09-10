@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roro.Activities.Storage", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roro.Workflow.Tests", "Roro.Workflow.Tests\Roro.Workflow.Tests.csproj", "{6040086F-7050-4D77-9478-55E3A4301843}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roro.Activities.Automation", "Roro.Activities.Automation\Roro.Activities.Automation.csproj", "{156D9E19-44BA-4128-9876-74DC47E3741B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roro.Activities.Automation", "Roro.Activities.Automation\Roro.Activities.Automation.csproj", "{156D9E19-44BA-4128-9876-74DC47E3741B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

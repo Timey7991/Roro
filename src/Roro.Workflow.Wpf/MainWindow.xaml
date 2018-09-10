@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Roro.Workflow.Wpf"
         xmlns:ro="clr-namespace:Roro.Workflow;assembly=Roro.Workflow"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=ro:Flow}"
         Title="{Binding Path=State}" Height="450" Width="800">
@@ -19,15 +20,32 @@
             <RowDefinition Height="250" />
         </Grid.RowDefinitions>
 
-        <WrapPanel>
+        <WrapPanel Margin="4">
             <Button Content="Save" Width="80" Click="SaveButton_Click" />
             <Button Content="Add Page" Width="80" Click="Button_Click" />
             <Button Content="Run" Width="80" Click="RunButton_Click" />
         </WrapPanel>
-        
-        <local:NodePickerControl Grid.Row="1" Grid.Column="0" />
-        <local:FlowControl Grid.Row="1" Grid.Column="1" />
-        <DataGrid Grid.Row="2" Grid.Column="1"
-                  ItemsSource="{Binding Path=LogEvents}"/>
+
+        <local:NodePickerControl Margin="4" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" />
+        <local:FlowControl Margin="4" Grid.Row="1" Grid.Column="1"  />
+        <DataGrid Margin="4" Grid.Row="2" Grid.Column="1"
+                  ItemsSource="{Binding Path=LogEvents}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Page"
+                                    Binding="{Binding Path=Page}" />
+                <DataGridTextColumn Header="Node"
+                                    Binding="{Binding Path=Node}" />
+                <DataGridTextColumn Header="Activity"
+                                    Binding="{Binding Path=Activity}" />
+                <DataGridTextColumn Header="Start Time"
+                                    Binding="{Binding Path=StartTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
+                <DataGridTextColumn Header="End Time"
+                                    Binding="{Binding Path=EndTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
+                <DataGridTextColumn Header="Handling Time"
+                                    Binding="{Binding Path=HandlingTime, StringFormat='h\\:mm\\:ss\\.fff'}" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

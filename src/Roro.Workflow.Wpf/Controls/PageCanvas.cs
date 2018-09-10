@@ -152,6 +152,7 @@ namespace Roro.Workflow.Wpf
                     node.SetLocation((int)e.GetPosition(this).X - node.Rect.Width / 2, (int)e.GetPosition(this).Y - node.Rect.Height / 2);
                     this._page.Add(node);
                     this._page.CommitPendingChanges();
+                    this._pageControl.UpdateLinks();
                 }
             }
         }

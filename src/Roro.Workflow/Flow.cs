@@ -37,7 +37,7 @@ namespace Roro.Workflow
 
         public Page MainPage => this._pages.First(x => x.Name == Page.MAIN_PAGE_NAME);
 
-        public ObservableCollection<NodeExecutionResult> LogEvents { get; } = new ObservableCollection<NodeExecutionResult>();
+        public ObservableCollection<NodeLogItem> LogEvents { get; } = new ObservableCollection<NodeLogItem>();
 
         private Flow()
         {
@@ -159,9 +159,22 @@ namespace Roro.Workflow
                 Thread.Sleep(500);
                 try
                 {
+                    var startTime = DateTime.Now;
                     var result = this.NextNode.Execute(null);
+                    var endTime = DateTime.Now;
                     this.Dispatch(() => {
-                        this.LogEvents.Add(result);
+                        var logItem = new NodeLogItem()
+                        {
+                            Page = this.NextNode.ParentPage.Name,
+                            Node = this.NextNode.Name,
+                            Activity = this.NextNode.GetType().Name,
+                            Arguments = this.NextNode.Arguments?.ToArray(),
+                            NextPage = result.NextPage?.Name,
+                            NextNode = result.NextPage?.Nodes.FirstOrDefault(x => x.Id == result.NextNodeId)?.Name,
+                            StartTime = startTime,
+                            EndTime = endTime
+                        };
+                        this.LogEvents.Add(logItem);
                     });
                     if (result.NextPage is Page nextPage)
                     {

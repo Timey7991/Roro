@@ -7,85 +7,74 @@
         xmlns:ro="clr-namespace:Roro.Workflow;assembly=Roro.Workflow"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=ro:Node}"
-        Title="NodePropertyEditor" FontFamily="Verdana" Height="450" Width="800">
-    <Grid>
+        Title="Edit Properties" Height="400" Width="600">
+    <Grid Background="#FFE6EBF0">
         <Grid.Resources>
             <local:TypeOfConverter x:Key="TypeOfConverter" />
         </Grid.Resources>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0"
-                   Text="Name"
-                   Margin="5"
-                   />
-        
-        <TextBox Grid.Row="0" Grid.Column="1"
-                 Text="{Binding Path=Name}"
-                 Margin="5"
-                 />
+        <StackPanel Grid.Row="0" Margin="12 12 0 0" Width="350" HorizontalAlignment="Left">
+            
+            <TextBlock Text="Name" />
+            
+            <TextBox Text="{Binding Path=Name}" Margin="0 3 0 0" Padding="3" />
 
-        <TextBlock Grid.Row="1" Grid.Column="0"
-                   Text="Activity"
-                   Margin="5"
-                   />
-        
-        <ComboBox Grid.Row="1" Grid.Column="1"
-                  Margin="5"
-                  SelectionChanged="TypeComboBox_SelectionChanged">
-            <ComboBox.Resources>
-                <Style TargetType="ComboBox">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Value="{x:Type ro:ActionNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                            <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.ActionTypes}" />
-                            <Setter Property="SelectedItem" Value="{Binding Path=ActionType}" />
-                            <Setter Property="DisplayMemberPath" Value="FullName" />
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                        <DataTrigger Value="{x:Type ro:DecisionNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                            <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.DecisionTypes}" />
-                            <Setter Property="SelectedItem" Value="{Binding Path=DecisionType}" />
-                            <Setter Property="DisplayMemberPath" Value="FullName" />
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                        <DataTrigger Value="{x:Type ro:LoopStartNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                            <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.LoopTypes}" />
-                            <Setter Property="SelectedItem" Value="{Binding Path=LoopType}" />
-                            <Setter Property="DisplayMemberPath" Value="FullName" />
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                        <DataTrigger Value="{x:Type ro:PageNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                            <Setter Property="ItemsSource" Value="{Binding Path=ParentPage.ParentFlow.Pages}" />
-                            <Setter Property="SelectedValue" Value="{Binding Path=PageId}" />
-                            <Setter Property="SelectedValuePath" Value="Id" />
-                            <Setter Property="DisplayMemberPath" Value="Name" />
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                        <DataTrigger Value="{x:Type ro:VariableNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                            <Setter Property="ItemsSource" Value="{x:Static ro:Argument.Types}" />
-                            <Setter Property="SelectedItem" Value="{Binding Path=VariableType}" />
-                            <Setter Property="DisplayMemberPath" Value="Name" />
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ComboBox.Resources>
-        </ComboBox>
+            <TextBlock Text="Activity" Margin="0 12 0 0" />
 
-        <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+            <ComboBox SelectionChanged="TypeComboBox_SelectionChanged" Margin="0 3 0 0" Padding="3">
+                <ComboBox.Resources>
+                    <Style TargetType="ComboBox">
+                        <Style.Triggers>
+                            <DataTrigger Value="{x:Type ro:ActionNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.ActionTypes}" />
+                                <Setter Property="SelectedItem" Value="{Binding Path=ActionType}" />
+                                <Setter Property="DisplayMemberPath" Value="FullName" />
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Value="{x:Type ro:DecisionNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.DecisionTypes}" />
+                                <Setter Property="SelectedItem" Value="{Binding Path=DecisionType}" />
+                                <Setter Property="DisplayMemberPath" Value="FullName" />
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Value="{x:Type ro:LoopStartNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="ItemsSource" Value="{x:Static ro:ActivityHelper.LoopTypes}" />
+                                <Setter Property="SelectedItem" Value="{Binding Path=LoopType}" />
+                                <Setter Property="DisplayMemberPath" Value="FullName" />
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Value="{x:Type ro:PageNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="ItemsSource" Value="{Binding Path=ParentPage.ParentFlow.Pages}" />
+                                <Setter Property="SelectedValue" Value="{Binding Path=PageId}" />
+                                <Setter Property="SelectedValuePath" Value="Id" />
+                                <Setter Property="DisplayMemberPath" Value="Name" />
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Value="{x:Type ro:VariableNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="ItemsSource" Value="{x:Static ro:Argument.Types}" />
+                                <Setter Property="SelectedItem" Value="{Binding Path=VariableType}" />
+                                <Setter Property="DisplayMemberPath" Value="Name" />
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Resources>
+            </ComboBox>
+
+        </StackPanel>
+
+        <DataGrid Grid.Row="1"
                   x:Name="ArgumentsDataGrid"
-                  Margin="5"
+                  Margin="12"
                 ItemsSource="{Binding Path=Arguments}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
@@ -124,8 +113,8 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-                        Orientation="Horizontal">
+        <!--<StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                    Orientation="Horizontal">
             <StackPanel.Resources>
                 <Style TargetType="StackPanel">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -150,6 +139,6 @@
             <Button Content="Remove" Click="RemoveButton_Click" />
             <Button Content="Move Up" Click="MoveUpButton_Click" />
             <Button Content="Move Down" Click="MoveDownButton_Click" />
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </Window>
