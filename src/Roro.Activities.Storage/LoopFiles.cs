@@ -41,7 +41,7 @@ namespace Roro.Activities.Storage
 
         public IEnumerator GetEnumerator()
         {
-            GetFiles.ExecuteInternal(this.Path.RuntimeValue, this.Pattern.RuntimeValue, out DataTable files);
+            ListFiles.ExecuteInternal(this.Path.RuntimeValue, this.Pattern.RuntimeValue, out DataTable files);
             return files.Rows.GetEnumerator();
         }
 

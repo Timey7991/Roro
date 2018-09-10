@@ -15,12 +15,13 @@ namespace Roro.Workflow.Wpf
         public NodePickerControl()
         {
             InitializeComponent();
-            InitializeItemSources();
+            this.DataContext = this;
+            InitializeItemSources(string.Empty);
         }
 
-        private void InitializeItemSources()
+        private void InitializeItemSources(string filter)
         {
-            this.DataContext = this;
+            this.TreeViewSource.Clear();
 
             var nodes = new NodePickerItem("General", null);
             nodes.Items.Add(new NodePickerItem("Action", new TypeWrapper(typeof(ActionNode))));
@@ -32,7 +33,7 @@ namespace Roro.Workflow.Wpf
             nodes.Items.Add(new NodePickerItem("End", new TypeWrapper(typeof(EndNode))));
             this.TreeViewSource.Add(nodes);
 
-            // TreeViewSource
+            var filterText = filter.Replace(" ", "").Replace(".", "").ToLower();
             foreach (var type in ActivityHelper.ActivityTypes)
             {
                 var typeName = type.Name;
@@ -41,7 +42,10 @@ namespace Roro.Workflow.Wpf
                 {
                     this.TreeViewSource.Add(new NodePickerItem(typeNamespace, null));
                 }
-                this.TreeViewSource.First(x => x.Text == typeNamespace).Items.Add(new NodePickerItem(typeName, type));
+                if (typeName.ToLower().Contains(filterText))
+                {
+                    this.TreeViewSource.First(x => x.Text == typeNamespace).Items.Add(new NodePickerItem(typeName, type));
+                }
             }
         }
 
@@ -58,7 +62,7 @@ namespace Roro.Workflow.Wpf
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
+            this.InitializeItemSources((sender as TextBox).Text);
         }
     }
 
@@ -68,13 +72,13 @@ namespace Roro.Workflow.Wpf
 
         public object Value { get; }
 
-        public List<NodePickerItem> Items { get; }
+        public ObservableCollection<NodePickerItem> Items { get; }
 
         public NodePickerItem(string text, object value)
         {
             this.Text = text;
             this.Value = value;
-            this.Items = new List<NodePickerItem>();
+            this.Items = new ObservableCollection<NodePickerItem>();
         }
     }
 }

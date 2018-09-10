@@ -78,9 +78,13 @@
                  Padding="4"
                  TextChanged="TextBox_TextChanged" />
         
-        <TreeView Grid.Row="2"
+        <TreeView x:Name="myTreeView"
+                  Grid.Row="2"
                   ItemsSource="{Binding Path=TreeViewSource}">
             <TreeView.Resources>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
                 <HierarchicalDataTemplate DataType="{x:Type local:NodePickerItem}"
                                           ItemsSource="{Binding Path=Items}">
                     <WrapPanel Background="Transparent"

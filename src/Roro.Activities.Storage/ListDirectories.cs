@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Roro.Activities.Storage
 {
-    public class GetDirectories : IAction
+    public class ListDirectories : IAction
     {
         public Input<string> Path { get; set; }
 

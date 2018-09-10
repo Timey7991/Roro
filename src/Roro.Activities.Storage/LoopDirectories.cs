@@ -33,7 +33,7 @@ namespace Roro.Activities.Storage
 
         public IEnumerator GetEnumerator()
         {
-            GetDirectories.ExecuteInternal(this.Path.RuntimeValue, this.Pattern.RuntimeValue, out DataTable directories);
+            ListDirectories.ExecuteInternal(this.Path.RuntimeValue, this.Pattern.RuntimeValue, out DataTable directories);
             return directories.Rows.GetEnumerator();
         }
 
