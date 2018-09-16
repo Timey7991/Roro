@@ -145,11 +145,11 @@ namespace Roro.Workflow.Wpf
             this._node.ParentPage.CommitPendingChanges();
             if (new NodePropertyEditor(this._node).ShowDialog() == true)
             {
-                //this._node.ParentPage.CommitPendingChanges();
+                this._node.ParentPage.CommitPendingChanges();
             }
             else
             {
-                //this._node.ParentPage.CancelPendingChanges();
+                this._node.ParentPage.CancelPendingChanges();
             }
         }
 

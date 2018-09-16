@@ -19,6 +19,12 @@ namespace Roro.Workflow.Wpf
             this.DataContext = node;
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this._nameTextBox.SelectAll();
+            this._nameTextBox.Focus();
+        }
+
         private void TypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this._node.SyncArguments();
@@ -89,6 +95,17 @@ namespace Roro.Workflow.Wpf
             {
                 ArgumentsDataGrid.SelectedItem = this._node.Arguments.LastOrDefault();
             }
+        }
+
+        private void OKButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+            this.Close();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();            
         }
     }
 }
