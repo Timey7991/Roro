@@ -17,6 +17,7 @@
     <Grid>
         <Grid.Resources>
             <local:TypeOfConverter x:Key="TypeOfConverter" />
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{DynamicResource {x:Static SystemColors.MenuHighlightColorKey}}" />
         </Grid.Resources>
 
         <Grid.RowDefinitions>
@@ -107,114 +108,84 @@
         </StackPanel>
 
         <Grid Grid.Row="1" Margin="12 12 12 0">
-            <DataGrid x:Name="ArgumentsDataGrid"
-                      ItemsSource="{Binding Path=Arguments}"
-                      Background="Transparent"
-                      AutoGenerateColumns="False"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      CanUserReorderColumns="False"
-                      CanUserResizeColumns="True"
-                      CanUserResizeRows="False"
-                      CanUserSortColumns="False"
-                      HorizontalGridLinesBrush="WhiteSmoke"
-                      VerticalGridLinesBrush="WhiteSmoke"
-                      SelectionMode="Extended"
-                      SelectionUnit="FullRow">
-                <DataGrid.Resources>
-                    <Style TargetType="DataGrid">
+            <Grid.Resources>
+                <DataTemplate DataType="{x:Type ro:TypeWrapper}">
+                    <TextBlock Text="{Binding Path=WrappedType.Name}" />
+                </DataTemplate>
+                <Style TargetType="DataGrid">
+                    <Setter Property="AutoGenerateColumns" Value="False" />
+                    <Setter Property="ItemsSource" Value="{Binding Path=Arguments}" />
+                    <Setter Property="Background" Value="WhiteSmoke" />
+                    <Setter Property="AutoGenerateColumns" Value="False" />
+                    <Setter Property="CanUserAddRows" Value="False" />
+                    <Setter Property="CanUserDeleteRows" Value="False" />
+                    <Setter Property="CanUserReorderColumns" Value="False" />
+                    <Setter Property="CanUserResizeColumns" Value="True" />
+                    <Setter Property="CanUserResizeRows" Value="False" />
+                    <Setter Property="CanUserSortColumns" Value="False" />
+                    <Setter Property="HorizontalGridLinesBrush" Value="LightGray" />
+                    <Setter Property="VerticalGridLinesBrush" Value="LightGray" />
+                    <Setter Property="SelectionMode" Value="Extended" />
+                    <Setter Property="SelectionUnit" Value="FullRow" />
+                </Style>
+                <DataGrid x:Key="NodeGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Direction" Binding="{Binding Path=Direction}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="ArgumentType" Binding="{Binding Path=ArgumentType.WrappedType.Name}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Expression" Binding="{Binding Path=Expression}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid x:Key="StartNodeGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" />
+                        <DataGridTextColumn Header="Direction" Binding="{Binding Path=Direction}" IsReadOnly="True" />
+                        <DataGridComboBoxColumn Header="ArgumentType" SelectedItemBinding="{Binding Path=ArgumentType}"
+                                                ItemsSource="{x:Static ro:Argument.Types}"
+                                                ClipboardContentBinding="{Binding Path=ArgumentType.WrappedType.Name}" />
+                        <DataGridTextColumn Header="VariableName" Binding="{Binding Path=Expression}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid x:Key="EndNodeGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" />
+                        <DataGridTextColumn Header="Direction" Binding="{Binding Path=Direction}" IsReadOnly="True" />
+                        <DataGridComboBoxColumn Header="ArgumentType" SelectedItemBinding="{Binding Path=ArgumentType}"
+                                                ItemsSource="{x:Static ro:Argument.Types}"
+                                                ClipboardContentBinding="{Binding Path=ArgumentType.WrappedType.Name}" />
+                        <DataGridTextColumn Header="Expression" Binding="{Binding Path=Expression}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid x:Key="PreparationNodeGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="VariableName" Binding="{Binding Path=Name}" />
+                        <DataGridTextColumn Header="Expression" Binding="{Binding Path=Expression}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid.Resources>
+            <ContentControl x:Name="_dataGridPresenter">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Setter Property="Content" Value="{StaticResource ResourceKey=NodeGrid}" />
                         <Style.Triggers>
-                            <Trigger Property="ItemsSource" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Trigger>
+                            <DataTrigger Value="{x:Type ro:StartNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="Content" Value="{StaticResource ResourceKey=StartNodeGrid}" />
+                            </DataTrigger>
+                            <DataTrigger Value="{x:Type ro:EndNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="Content" Value="{StaticResource ResourceKey=EndNodeGrid}" />
+                            </DataTrigger>
+                            <DataTrigger Value="{x:Type ro:PreparationNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="Content" Value="{StaticResource ResourceKey=PreparationNodeGrid}" />
+                            </DataTrigger>
+                            <DataTrigger Value="{x:Type ro:VariableNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
+                                <Setter Property="Content" Value="" />
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                    <Style TargetType="DataGridCell">
-                        <Setter Property="Padding" Value="3" />
-                    </Style>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{DynamicResource {x:Static SystemColors.MenuHighlightColorKey}}" />
-                </DataGrid.Resources>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Path=Name}" Width="Auto">
-                        <DataGridTextColumn.HeaderStyle>
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="Content" Value="Name" />
-                                <Style.Triggers>
-                                    <DataTrigger Value="{x:Type ro:PreparationNode}"
-                                                 Binding="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                                        <Setter Property="Content" Value="Variable" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGridTextColumn.HeaderStyle>
-                        <DataGridTextColumn.EditingElementStyle>
-                            <Style TargetType="TextBox">
-                                <Setter Property="IsReadOnly" Value="True" />
-                                <Style.Triggers>
-                                    <DataTrigger Value="{x:Type ro:StartNode}"
-                                                 Binding="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                                        <Setter Property="IsReadOnly" Value="False" />
-                                    </DataTrigger>
-                                    <DataTrigger Value="{x:Type ro:EndNode}"
-                                                 Binding="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                                        <Setter Property="IsReadOnly" Value="False" />
-                                    </DataTrigger>
-                                    <DataTrigger Value="{x:Type ro:PreparationNode}"
-                                                 Binding="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                                        <Setter Property="IsReadOnly" Value="False" />
-                                    </DataTrigger>
-                                    <Trigger Property="IsReadOnly" Value="True">
-                                        <Setter Property="IsEnabled" Value="False" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGridTextColumn.EditingElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Path=Direction}" Width="Auto" Header="Direction" IsReadOnly="True" />
-                    <DataGridComboBoxColumn Header="ArgumentType" Width="Auto"
-                                            DisplayMemberPath="WrappedType.Name"
-                                            ItemsSource="{x:Static ro:Argument.Types}"
-                                            SelectedItemBinding="{Binding Path=ArgumentType}"
-                                            ClipboardContentBinding="{Binding Path=ArgumentType.WrappedType.Name}">
-                        <DataGridComboBoxColumn.EditingElementStyle>
-                            <Style TargetType="ComboBox">
-                                <Setter Property="IsReadOnly" Value="True" />
-                                <Style.Triggers>
-                                    <DataTrigger Value="{x:Type ro:StartNode}"
-                                                 Binding="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                                        <Setter Property="IsReadOnly" Value="False" />
-                                    </DataTrigger>
-                                    <DataTrigger Value="{x:Type ro:EndNode}"
-                                                 Binding="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                                        <Setter Property="IsReadOnly" Value="False" />
-                                    </DataTrigger>
-                                    <DataTrigger Value="{x:Type ro:PreparationNode}"
-                                                 Binding="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                                        <Setter Property="IsReadOnly" Value="False" />
-                                    </DataTrigger>
-                                    <Trigger Property="IsReadOnly" Value="True">
-                                        <Setter Property="Foreground" Value="Blue" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGridComboBoxColumn.EditingElementStyle>
-                    </DataGridComboBoxColumn>
-                    <DataGridTextColumn Binding="{Binding Path=Expression}" Width="*">
-                        <DataGridTextColumn.HeaderStyle>
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="Content" Value="Expression" />
-                                <Style.Triggers>
-                                    <DataTrigger Value="{x:Type ro:StartNode}" Binding="{Binding Converter={StaticResource ResourceKey=TypeOfConverter}}">
-                                        <Setter Property="Content" Value="Variable" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGridTextColumn.HeaderStyle>
-                    </DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+                </ContentControl.Style>
+            </ContentControl>
         </Grid>
-
+       
         <StackPanel Grid.Row="2" Margin="12 12 12 0" Orientation="Horizontal">
             <StackPanel.Resources>
                 <Style TargetType="StackPanel">

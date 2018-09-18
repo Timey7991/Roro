@@ -9,6 +9,8 @@ namespace Roro.Workflow.Wpf
     {
         private IEditableNode _node => this.DataContext as IEditableNode;
 
+        private DataGrid _dataGrid => VisualTreeHelperEx.GetDescendant<DataGrid>(this._dataGridPresenter);
+
         public NodePropertyEditor()
         {
             InitializeComponent();
@@ -36,7 +38,7 @@ namespace Roro.Workflow.Wpf
             {
                 this._node.Arguments.Add(new InArgument()
                 {
-                    Name = "Input " + (this._node.Arguments.Count + 1),
+                    Name = "Input" + (this._node.Arguments.Count + 1),
                     ArgumentType = Argument.Types.First()
                 });
             }
@@ -44,7 +46,7 @@ namespace Roro.Workflow.Wpf
             {
                 this._node.Arguments.Add(new OutArgument()
                 {
-                    Name = "Output " + (this._node.Arguments.Count + 1),
+                    Name = "Output" + (this._node.Arguments.Count + 1),
                     ArgumentType = Argument.Types.First()
                 });
             }
@@ -52,7 +54,7 @@ namespace Roro.Workflow.Wpf
             {
                 this._node.Arguments.Add(new InOutArgument()
                 {
-                    Name = "Variable " + (this._node.Arguments.Count + 1),
+                    Name = "Variable" + (this._node.Arguments.Count + 1),
                     ArgumentType = Argument.Types.First()
                 });
             }
@@ -60,40 +62,40 @@ namespace Roro.Workflow.Wpf
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            ArgumentsDataGrid.SelectedItems.Cast<Argument>().ToList()
+            this._dataGrid.SelectedItems.Cast<Argument>().ToList()
                 .ForEach(x => this._node.Arguments.Remove(x));
-            if (ArgumentsDataGrid.SelectedItems.Count == 0)
+            if (this._dataGrid.SelectedItems.Count == 0)
             {
-                ArgumentsDataGrid.SelectedItem = this._node.Arguments.LastOrDefault();
+                this._dataGrid.SelectedItem = this._node.Arguments.LastOrDefault();
             }
         }
 
         private void MoveUpButton_Click(object sender, RoutedEventArgs e)
         {
             this._node.Arguments.ToList()
-                .Where(x => ArgumentsDataGrid.SelectedItems.Contains(x)).ToList()
+                .Where(x => this._dataGrid.SelectedItems.Contains(x)).ToList()
                 .ForEach(x => {
                     var index = this._node.Arguments.IndexOf(x);
                     this._node.Arguments.Move(index, Math.Max(index - 1, 0));
                 });
-            if (ArgumentsDataGrid.SelectedItems.Count == 0)
+            if (this._dataGrid.SelectedItems.Count == 0)
             {
-                ArgumentsDataGrid.SelectedItem = this._node.Arguments.FirstOrDefault();
+                this._dataGrid.SelectedItem = this._node.Arguments.FirstOrDefault();
             }
         }
 
         private void MoveDownButton_Click(object sender, RoutedEventArgs e)
         {
             this._node.Arguments.ToList()
-                .Where(x => ArgumentsDataGrid.SelectedItems.Contains(x))
+                .Where(x => this._dataGrid.SelectedItems.Contains(x))
                 .Reverse().ToList()
                 .ForEach(x => {
                     var index = this._node.Arguments.IndexOf(x);
                     this._node.Arguments.Move(index, Math.Min(index + 1, this._node.Arguments.Count - 1));
                 });
-            if (ArgumentsDataGrid.SelectedItems.Count == 0)
+            if (this._dataGrid.SelectedItems.Count == 0)
             {
-                ArgumentsDataGrid.SelectedItem = this._node.Arguments.LastOrDefault();
+                this._dataGrid.SelectedItem = this._node.Arguments.LastOrDefault();
             }
         }
 
