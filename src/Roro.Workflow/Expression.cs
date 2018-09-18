@@ -1,28 +1,61 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System;
-using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Roro.Workflow
 {
     public static class Expression
     {
-        public static object Evaluate(string expression, IEnumerable<VariableNode> variableNodes)
+        private sealed class VariableListProvider
         {
-            if (String.IsNullOrWhiteSpace(expression))
+            public dynamic v { get; }
+
+            public VariableListProvider(Page page)
             {
-                return null;
+                this.v = new VariableList(page);
+            }
+        }
+
+        private sealed class VariableList : DynamicObject
+        {
+            private readonly Page _page;
+
+            public VariableList(Page page)
+            {
+                this._page = page;   
+            }
+
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                if (this._page.Nodes.Where(x => x is VariableNode).Cast<VariableNode>()
+                                    .FirstOrDefault(x => x.Name == binder.Name) is VariableNode variableNode)
+                {
+                    result = variableNode.RuntimeValue;
+                    return true;
+                }
+                return base.TryGetMember(binder, out result);
+            }
+        }
+
+        public static object Evaluate(string code, Page page) => Evaluate<object>(code, page);
+
+        public static T Evaluate<T>(string code, Page page)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return default(T);
             }
 
             try
             {
-                //expression = Expression.Resolve(expression, variableNodes);
-                var result = Task.Run(async () =>
-                {
-                    return await CSharpScript.EvaluateAsync(expression, ScriptOptions.Default.WithImports("System"));
-                }).Result;
+                var result = CSharpScript.EvaluateAsync<T>(
+                    code,
+                    ScriptOptions.Default
+                        .WithImports("System")
+                        .WithReferences("Microsoft.CSharp"),
+                    new VariableListProvider(page)).Result;
                 return result;
             }
             catch (CompilationErrorException)
@@ -30,44 +63,5 @@ namespace Roro.Workflow
                 throw; // string.Join(Environment.NewLine, e.Diagnostics)
             }
         }
-
-        //private static string Resolve(string expression, IEnumerable<VariableNode> variableNodes)
-        //{
-        //    var resolvedExpression = string.Empty;
-
-        //    var currentIndex = 0;
-        //    while (currentIndex < expression.Length)
-        //    {
-        //        var startIndex = expression.IndexOf(VariableNode.StartToken, currentIndex);
-        //        if (startIndex < 0)
-        //        {
-        //            resolvedExpression += expression.Substring(currentIndex);
-        //            break;
-        //        }
-        //        var endIndex = expression.IndexOf(VariableNode.EndToken, startIndex + 1);
-        //        if (endIndex < 0)
-        //        {
-        //            throw new FormatException(string.Format("The variable at char {0} has missing '{1}' in expression:\n\n{2}", startIndex, VariableNode.EndToken, expression));
-        //        }
-        //        var variableName = expression.Substring(startIndex + 1, endIndex - startIndex - 1);
-        //        if (variableName == VariableNode.StartToken)
-        //        {
-        //            resolvedExpression += expression.Substring(currentIndex, endIndex - currentIndex + 1);
-        //            currentIndex = endIndex + 1;
-        //            continue;
-        //        }
-        //        var variableNode = variableNodes.FirstOrDefault(x => x.Name == variableName);
-        //        if (variableNode == null)
-        //        {
-        //            throw new FormatException(string.Format("Variable {0}{1}{2} not found.", VariableNode.StartToken, variableName, VariableNode.EndToken));
-        //        }
-        //        var variable = DataType.CreateInstance(variableNode.Type);
-        //        variable.SetValue(variableNode.CurrentValue);
-        //        resolvedExpression += variable.ToExpression();
-        //        currentIndex = endIndex + 1;
-        //    }
-
-        //    return resolvedExpression;
-        //}
     }
 }
