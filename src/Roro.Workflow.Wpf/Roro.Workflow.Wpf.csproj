@@ -96,6 +96,7 @@
       <DependentUpon>PortControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\MultiValueEqualityConverter.cs" />
+    <Compile Include="Converters\PropertyWrapper.cs" />
     <Compile Include="Converters\TypeOfConverter.cs" />
     <Compile Include="Controls\FlowControl.xaml.cs">
       <DependentUpon>FlowControl.xaml</DependentUpon>

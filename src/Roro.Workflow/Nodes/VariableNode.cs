@@ -17,6 +17,7 @@ namespace Roro.Workflow
                 {
                     this.OnPropertyChanged(ref this._variableType, value);
                     this.InitialValue = this.InitialValue;
+                    this.RuntimeValue = this.RuntimeValue;
                 }
                 else
                 {
@@ -25,14 +26,6 @@ namespace Roro.Workflow
             }
         }
         private TypeWrapper _variableType;
-
-        public DateTime DateTimeValue
-        {
-            get => this._dateTimeValue;
-            set => this.OnPropertyChanged(ref this._dateTimeValue, value);
-
-        }
-        private DateTime _dateTimeValue;
 
         public object InitialValue
         {
@@ -56,7 +49,18 @@ namespace Roro.Workflow
         public object RuntimeValue
         {
             get => this._runtimeValue;
-            private set => this.OnPropertyChanged(ref this._runtimeValue, value);
+            set
+            {
+                try
+                {
+                    value = Convert.ChangeType(value, this.VariableType.WrappedType);
+                }
+                catch
+                {
+                    value = Argument.GetTypeDefaultValue(this.VariableType);
+                }
+                this.OnPropertyChanged(ref this._runtimeValue, value);
+            }
         }
         private object _runtimeValue;
 
