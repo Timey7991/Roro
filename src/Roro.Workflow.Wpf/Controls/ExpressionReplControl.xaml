@@ -10,7 +10,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" x:Name="_outputTextBox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" />
+        <TextBox Grid.Row="0" x:Name="_outputTextBox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
         <TextBox Grid.Row="1" x:Name="_inputTextBox" KeyDown="_inputTextBox_KeyDown" />
     </Grid>
 </UserControl>
