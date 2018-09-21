@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using System;
 using System.Dynamic;
 using System.Linq;
 
@@ -8,21 +7,21 @@ namespace Roro.Workflow
 {
     public static class Expression
     {
-        private sealed class VariableListProvider
+        public sealed class VariableListProvider
         {
             public dynamic v { get; }
 
-            public VariableListProvider(Page page)
+            public VariableListProvider(IEditablePage page)
             {
                 this.v = new VariableList(page);
             }
         }
 
-        private sealed class VariableList : DynamicObject
+        public sealed class VariableList : DynamicObject
         {
-            private readonly Page _page;
+            private readonly IEditablePage _page;
 
-            public VariableList(Page page)
+            public VariableList(IEditablePage page)
             {
                 this._page = page;   
             }
@@ -39,9 +38,9 @@ namespace Roro.Workflow
             }
         }
 
-        public static object Evaluate(string code, Page page) => Evaluate<object>(code, page);
+        public static object Evaluate(string code, IEditablePage page) => Evaluate<object>(code, page);
 
-        public static T Evaluate<T>(string code, Page page)
+        public static T Evaluate<T>(string code, IEditablePage page)
         {
             if (string.IsNullOrWhiteSpace(code))
             {

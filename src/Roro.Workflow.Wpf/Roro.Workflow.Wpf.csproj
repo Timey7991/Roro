@@ -75,6 +75,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ExpressionReplControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +104,9 @@
     <Compile Include="Converters\TypeOfConverter.cs" />
     <Compile Include="Controls\FlowControl.xaml.cs">
       <DependentUpon>FlowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ExpressionReplControl.xaml.cs">
+      <DependentUpon>ExpressionReplControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\VisualTreeHelperEx.cs" />
     <Compile Include="MainWindow.xaml.cs">

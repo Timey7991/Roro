@@ -28,24 +28,31 @@
 
         <local:NodePickerControl Margin="4" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" />
         <local:FlowControl Margin="4" Grid.Row="1" Grid.Column="1"  />
-        <DataGrid Margin="4" Grid.Row="2" Grid.Column="1"
-                  ItemsSource="{Binding Path=LogEvents}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Page"
+
+        <TabControl Margin="4" Grid.Row="2" Grid.Column="1">
+            <TabItem Header="Output">
+                <DataGrid ItemsSource="{Binding Path=LogEvents}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Page"
                                     Binding="{Binding Path=Page}" />
-                <DataGridTextColumn Header="Node"
+                        <DataGridTextColumn Header="Node"
                                     Binding="{Binding Path=Node}" />
-                <DataGridTextColumn Header="Activity"
+                        <DataGridTextColumn Header="Activity"
                                     Binding="{Binding Path=Activity}" />
-                <DataGridTextColumn Header="Start Time"
+                        <DataGridTextColumn Header="Start Time"
                                     Binding="{Binding Path=StartTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
-                <DataGridTextColumn Header="End Time"
+                        <DataGridTextColumn Header="End Time"
                                     Binding="{Binding Path=EndTime, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
-                <DataGridTextColumn Header="Handling Time"
+                        <DataGridTextColumn Header="Handling Time"
                                     Binding="{Binding Path=HandlingTime, StringFormat='h\\:mm\\:ss\\.fff'}" />
-            </DataGrid.Columns>
-        </DataGrid>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="Expression">
+                <local:ExpressionReplControl DataContext="{Binding Path=SelectedPage}" />
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
