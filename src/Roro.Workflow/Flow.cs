@@ -81,6 +81,19 @@ namespace Roro.Workflow
             {
                 return;
             }
+            if (this.SelectedPage == page)
+            {
+                var selectedPageIndex = this._pages.IndexOf((Page)page);
+                if (page == this._pages.Last())
+                {
+                    selectedPageIndex = selectedPageIndex - 1;
+                }
+                else
+                {
+                    selectedPageIndex = selectedPageIndex + 1;
+                }
+                this.SelectedPage = this._pages.ElementAt(selectedPageIndex);
+            }
             this._pages.Remove((Page)page);
         }
 
