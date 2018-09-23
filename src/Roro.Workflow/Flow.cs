@@ -159,6 +159,8 @@ namespace Roro.Workflow
                 Thread.Sleep(500);
                 try
                 {
+                    this._ctsPause.Token.ThrowIfCancellationRequested();
+                    this._ctsStop.Token.ThrowIfCancellationRequested();
                     var startTime = DateTime.Now;
                     var result = this.NextNode.Execute(null);
                     var endTime = DateTime.Now;
@@ -242,9 +244,17 @@ namespace Roro.Workflow
 
         public void Reset()
         {
-            this.NextNode = null;
-            this.Pages.Cast<Page>().ToList().ForEach(x => x.Reset());
-            this.State = FlowState.Idle;
+            switch (this.State)
+            {
+                case FlowState.Paused:
+                case FlowState.Stopped:
+                case FlowState.Completed:
+                case FlowState.Failed:
+                    this.NextNode = null;
+                    this.Pages.Cast<Page>().ToList().ForEach(x => x.Reset());
+                    this.State = FlowState.Idle;
+                    break;
+            }
         }
 
         public delegate void Dispatcher(Action action);

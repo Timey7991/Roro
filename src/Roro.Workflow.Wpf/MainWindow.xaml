@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=ro:Flow}"
         Title="{Binding Path=State}" Height="450" Width="800"
+        WindowState="Maximized"
         FontFamily="Consolas" FontSize="14">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,20 +21,58 @@
             <RowDefinition Height="250" />
         </Grid.RowDefinitions>
 
-        <WrapPanel Margin="4">
-            <Button Content="Save" Width="80" Click="SaveButton_Click" />
-            <Button Content="Add Page" Width="80" Click="Button_Click" />
-            <Button Content="Run" Width="80" Click="RunButton_Click" />
+        <WrapPanel Grid.ColumnSpan="2">
+            <WrapPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Width" Value="80" />
+                </Style>
+                <Style TargetType="Separator">
+                    <Setter Property="Width" Value="12" />
+                    <Setter Property="Visibility" Value="Hidden" />
+                </Style>
+                <Style x:Key="DisabledWhenRunningButtonStyle" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=State}" Value="Running">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=State}" Value="Pausing">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=State}" Value="Stopping">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+                <Style x:Key="EnabledWhenIdleButtonStyle" TargetType="Button" BasedOn="{StaticResource ResourceKey={x:Type Button}}">
+                    <Setter Property="IsEnabled" Value="False" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=State}" Value="Running">
+                            <Setter Property="IsEnabled" Value="True" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </WrapPanel.Resources>
+            <Button Content="Open" Style="{StaticResource ResourceKey=DisabledWhenRunningButtonStyle}" />
+            <Button Content="Save" Style="{StaticResource ResourceKey=DisabledWhenRunningButtonStyle}" Click="SaveButton_Click" />
+            <Separator />
+            <Button Content="Add Page" Style="{StaticResource ResourceKey=DisabledWhenRunningButtonStyle}" Click="AddPageButton_Click" />
+            <Separator />
+            <Button Content="Run" Style="{StaticResource ResourceKey=DisabledWhenRunningButtonStyle}" Click="RunButton_Click" />
+            <Button Content="Pause" Style="{StaticResource ResourceKey=EnabledWhenIdleButtonStyle}" Click="PauseButton_Click" />
+            <Button Content="Stop" Style="{StaticResource ResourceKey=EnabledWhenIdleButtonStyle}" Click="StopButton_Click" />
         </WrapPanel>
 
         <local:NodePickerControl Margin="4" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" />
+
         <local:FlowControl Margin="4" Grid.Row="1" Grid.Column="1"  />
 
         <TabControl Margin="4" Grid.Row="2" Grid.Column="1">
             <TabItem Header="Output">
                 <DataGrid ItemsSource="{Binding Path=LogEvents}"
                           AutoGenerateColumns="False"
-                          IsReadOnly="True">
+                          IsReadOnly="True"
+                          DataContextChanged="DataGrid_DataContextChanged"
+                          >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Page"
                                     Binding="{Binding Path=Page}" />

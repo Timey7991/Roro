@@ -23,7 +23,7 @@ namespace Roro.Workflow.Wpf
             dialog.ShowDialog();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AddPageButton_Click(object sender, RoutedEventArgs e)
         {
             this._flow.AddPage(new Page("Page " + this._flow.Pages.Count()));
         }
@@ -31,6 +31,26 @@ namespace Roro.Workflow.Wpf
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
             this._flow.Run();
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this._flow.Pause();
+        }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            this._flow.Stop();
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            this._flow.Reset();
+        }
+
+        private void DataGrid_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
         }
     }
 }
