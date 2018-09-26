@@ -8,7 +8,8 @@ The software is released under BSD 2-Clause open-source [license](LICENSE).
 
 The C# source files are available [here](src) and the compiled binaries [here](bin).
 
-[![Build status](https://ci.appveyor.com/api/projects/status/y21t2m0o8b59iaoj?svg=true)](https://ci.appveyor.com/project/arviedelgado/roro)
+[![Build status](https://ci.appveyor.com/api/projects/status/y21t2m0o8b59iaoj?svg=true)](https://ci.appveyor.com/project/arviedelgado/Roro)
+[![Gitter chat](https://badges.gitter.im/arviedelgado/Roro.png)](https://gitter.im/arviedelgado/Roro)
 
 Watch our "Hello Automation!" example and see how it works!
 
